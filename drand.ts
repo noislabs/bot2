@@ -19,13 +19,16 @@ export const drandUrls = [
 const DRAND_GENESIS = 1595431050;
 const DRAND_ROUND_LENGTH = 30; // in ms
 
-// Time of round in milliseconds.
+// Time of round in seconds.
 //
 // See TimeOfRound implementation: https://github.com/drand/drand/blob/eb36ba81e3f28c966f95bcd602f60e7ff8ef4c35/chain/time.go#L30-L33
 export function timeOfRound(round: number): number {
-  return (DRAND_GENESIS + (round - 1) * DRAND_ROUND_LENGTH) * 1000;
+  return (DRAND_GENESIS + (round - 1) * DRAND_ROUND_LENGTH);
 }
 
+/**
+ * Time between publishing and now in seconds
+ */
 export function publishedSince(round: number): number {
-  return Date.now() - timeOfRound(round);
+  return Date.now() / 1000 - timeOfRound(round);
 }
