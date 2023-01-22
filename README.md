@@ -20,7 +20,7 @@ us type-safety and and a more integrated deployment experience.
 ## How to start
 
 1. Check and adjust settings in `env.ts`
-2. Run `deno run --allow-read --allow-net main.ts`
+2. Run `deno run --allow-read --allow-net main.ts` or run in background with pm2 `pm2 start main.ts --interpreter="deno" --interpreter-args="run --allow-read --allow-net" `
 
 ## Installation
 
