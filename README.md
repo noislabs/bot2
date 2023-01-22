@@ -20,7 +20,7 @@ us type-safety and and a more integrated deployment experience.
 ## How to start
 
 1. Check and adjust settings in `env.ts`
-2. Run `deno run --allow-read --allow-net main.ts` or run in background with pm2 `pm2 start main.ts --interpreter="deno" --interpreter-args="run --allow-read --allow-net" `
+2. Run `deno run --allow-read --allow-net main.ts`
 
 ## Installation
 
@@ -47,3 +47,32 @@ git clone https://github.com/noislabs/bot2.git \
 ```
 
 That's it. Move on with "How to start".
+
+## Run with PM2
+Run bot in the background using PM2.
+
+Install Deno as written above, then install NodeJS and PM2:
+```sh
+wget -O nodejs.deb https://deb.nodesource.com/node_16.x/pool/main/n/nodejs/nodejs_16.17.1-deb-1nodesource1_amd64.deb \
+  && sudo dpkg -i nodejs.deb \
+  && npm install pm2 -g \
+  && cd $HOME/bot2
+  ```
+Run bot:
+```sh
+pm2 start main.ts --interpreter="deno" --interpreter-args="run --allow-read --allow-net"
+  ```
+Useful commands:
+```sh
+#show logs
+pm2 logs --lines 100
+
+#restart
+pm2 restart main
+
+#restart and show logs
+pm2 restart main && pm2 logs --lines 100
+
+#stop bot
+pm2 stop main
+  ```
