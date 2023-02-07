@@ -9,6 +9,7 @@ import { TxRaw } from "npm:cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import { MsgExecuteContract } from "npm:cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
 import * as env from "./env.ts";
+import { group, isMyGroup } from "./group.ts";
 
 function printableCoin(coin: Coin): string {
   if (coin.denom?.startsWith("u")) {
@@ -66,6 +67,7 @@ if (import.meta.main) {
   });
   const botAddress = firstAccount.address;
   console.log(`Bot address: ${botAddress}`);
+  console.log(`Group: ${group(botAddress)}`);
 
   // Needed in case an error happened to ensure sequence is in sync
   // with chain
@@ -120,6 +122,12 @@ if (import.meta.main) {
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     const delay = publishedSince(beacon.round);
     console.log(`Got beacon of round: ${beacon.round} after ${delay.toFixed(3)}s`);
+
+    if (!isMyGroup(botAddress, beacon.round)) {
+      console.log(`Not my turn, skipping.`);
+      continue;
+    }
+
     const broadcastTime = Date.now() / 1000;
     const msg = {
       typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
