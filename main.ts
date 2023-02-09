@@ -8,7 +8,6 @@ import { isDefined, sleep } from "npm:@cosmjs/utils";
 import { TxRaw } from "npm:cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import { MsgExecuteContract } from "npm:cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
-import * as env from "./env.ts";
 import { group, isMyGroup } from "./group.ts";
 
 function printableCoin(coin: Coin): string {
@@ -46,11 +45,15 @@ export function ibcPacketsSent(resultLogs: any) {
 }
 
 if (import.meta.main) {
+  const { default: config } = await import("./config.json", {
+    assert: { type: "json" },
+  });
+
   const mnemonic = await (async () => {
-    if (env.mnemonic) {
-      return env.mnemonic;
+    if (config.mnemonic) {
+      return config.mnemonic;
     } else {
-      const wallet = await DirectSecp256k1HdWallet.generate(12, { prefix: env.prefix });
+      const wallet = await DirectSecp256k1HdWallet.generate(12, { prefix: config.prefix });
       const newMnemonic = wallet.mnemonic;
       const [account] = await wallet.getAccounts();
       const address = account.address;
@@ -59,11 +62,11 @@ if (import.meta.main) {
     }
   })();
 
-  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: env.prefix });
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: config.prefix });
   const [firstAccount] = await wallet.getAccounts();
-  const client = await SigningCosmWasmClient.connectWithSigner(env.rpcEndpoint, wallet, {
-    prefix: env.prefix,
-    gasPrice: env.gasPrice,
+  const client = await SigningCosmWasmClient.connectWithSigner(config.rpcEndpoint, wallet, {
+    prefix: config.prefix,
+    gasPrice: config.gasPrice,
   });
   const botAddress = firstAccount.address;
   console.log(`Bot address: ${botAddress}`);
@@ -79,21 +82,25 @@ if (import.meta.main) {
     console.log(`Sign data set to: ${JSON.stringify(nextSignData)}`);
   };
 
-  const fee = calculateFee(750_000, env.gasPrice);
+  const fee = calculateFee(750_000, config.gasPrice);
 
-  console.info(`Connected to RPC endpoint ${env.rpcEndpoint}.`);
+  console.info(`Connected to RPC endpoint ${config.rpcEndpoint}.`);
   console.info(`Chain ID: ${await client.getChainId()}`);
   console.info(`Height: ${await client.getHeight()}`);
 
-  const broadcaster2 = env.rpcEndpoint2 ? await CosmWasmClient.connect(env.rpcEndpoint2) : null;
-  const broadcaster3 = env.rpcEndpoint3 ? await CosmWasmClient.connect(env.rpcEndpoint3) : null;
+  const broadcaster2 = config.rpcEndpoint2
+    ? await CosmWasmClient.connect(config.rpcEndpoint2)
+    : null;
+  const broadcaster3 = config.rpcEndpoint3
+    ? await CosmWasmClient.connect(config.rpcEndpoint3)
+    : null;
 
-  const moniker = env.moniker;
+  const moniker = config.moniker;
   if (moniker) {
     console.info("Registering this bot ...");
     await client.execute(
       botAddress,
-      env.noisContract,
+      config.contract,
       {
         register_bot: { moniker: moniker },
       },
@@ -106,7 +113,7 @@ if (import.meta.main) {
   await Promise.all([
     sleep(500), // the min waiting time
     (async function () {
-      const { listed } = await client.queryContractSmart(env.noisContract, {
+      const { listed } = await client.queryContractSmart(config.contract, {
         is_allow_listed: { bot: botAddress },
       });
       console.info(`Bot allow listed for rewards: ${listed}`);
@@ -133,7 +140,7 @@ if (import.meta.main) {
       typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
       value: MsgExecuteContract.fromPartial({
         sender: botAddress,
-        contract: env.noisContract,
+        contract: config.contract,
         msg: toUtf8(
           JSON.stringify({
             add_round: {
@@ -190,7 +197,7 @@ if (import.meta.main) {
     // Some seconds after the submission when things are idle, check and log
     // the balance of the bot.
     setTimeout(() => {
-      client.getBalance(botAddress, env.denom).then(
+      client.getBalance(botAddress, config.denom).then(
         (balance: unknown) => {
           console.log(`Balance: ${printableCoin(balance)}`);
         },

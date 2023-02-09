@@ -18,7 +18,7 @@ integrated deployment experience.
 
 ## How to start
 
-1. Check and adjust settings in `env.ts`
+1. Copy `config.example.json` to `config.json` and adjust it to your needs
 2. Run `deno run --allow-read --allow-net main.ts`
 
 ## Installation
@@ -46,6 +46,11 @@ git clone https://github.com/noislabs/bot2.git \
 ```
 
 That's it. Move on with "How to start".
+
+## Upgrading
+
+1. In the bot2 checkout run `git pull`.
+2. Check if your `config.json` has all the fields from `config.example.json` and adapt if necessary.
 
 ## Run with PM2
 
