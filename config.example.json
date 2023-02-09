@@ -1,0 +1,11 @@
+{
+  "rpcEndpoint": "https://nois-testnet-rpc.itrocket.net:443",
+  "rpcEndpoint2": "",
+  "rpcEndpoint3": "",
+  "contract": "nois14ex94lcyfsyjy3mj470yernkxykh2jvcvuepa63utqeuq4gggvmqx5sjm2",
+  "mnemonic": "",
+  "denom": "unois",
+  "gasPrice": "0.05unois",
+  "prefix": "nois",
+  "moniker": ""
+}

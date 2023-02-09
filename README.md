@@ -18,7 +18,7 @@ integrated deployment experience.
 
 ## How to start
 
-1. Check and adjust settings in `env.ts`
+1. Copy `config.example.json` to `config.json` and adjust it to your needs
 2. Run `deno run --allow-read --allow-net main.ts`
 
 ## Installation
