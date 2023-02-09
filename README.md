@@ -47,6 +47,11 @@ git clone https://github.com/noislabs/bot2.git \
 
 That's it. Move on with "How to start".
 
+## Upgrading
+
+1. In the bot2 checkout run `git pull`.
+2. Check if your `config.json` has all the fields from `config.example.json` and adapt if necessary.
+
 ## Run with PM2
 
 Run bot in the background using PM2.
