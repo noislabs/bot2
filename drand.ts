@@ -1,8 +1,10 @@
+import { ChainOptions } from "npm:drand-client@^1.0.0-pre.9";
+
 const chainHash = "8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce";
 const publicKey =
   "868f005eb8e6e4ca0a47c8a77ceaa5309a47978a7c71bc5cce96366b5d7a569937c529eeda66c7293784a9402801af31"; // (hex encoded)
 
-export const drandOptions = {
+export const drandOptions: ChainOptions = {
   disableBeaconVerification: true,
   noCache: false,
   chainVerificationParams: { chainHash, publicKey },
