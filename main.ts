@@ -179,8 +179,13 @@ if (import.meta.main) {
     assertIsDeliverTxSuccess(result);
     const parsedLogs = logs.parseRawLog(result.rawLog);
     const jobs = ibcPacketsSent(parsedLogs);
+    const wasmEvent = result.events.find((event) => (event.type == "wasm"));
+    const points = wasmEvent?.attributes.find((attr) => attr.key.startsWith("reward_points"))
+      ?.value;
+    const payout = wasmEvent?.attributes.find((attr) => attr.key.startsWith("reward_payout"))
+      ?.value;
     console.info(
-      `✔ Round ${beacon.round} (Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
+      `✔ Round ${beacon.round} (Points: ${points}; Payout: ${payout}; Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
     );
     const publishTime = timeOfRound(beacon.round);
     const { block } = await client.forceGetTmClient().block(result.height);
