@@ -1,6 +1,6 @@
 import { FastestNodeClient, watch } from "npm:drand-client@^1.0.0-pre.9";
 import { Coin, CosmWasmClient, SigningCosmWasmClient } from "npm:@cosmjs/cosmwasm-stargate";
-import { assertIsDeliverTxSuccess, calculateFee, logs } from "npm:@cosmjs/stargate";
+import { assertIsDeliverTxSuccess, calculateFee, GasPrice, logs } from "npm:@cosmjs/stargate";
 import { toUtf8 } from "npm:@cosmjs/encoding";
 import { Decimal } from "npm:@cosmjs/math";
 import { DirectSecp256k1HdWallet } from "npm:@cosmjs/proto-signing";
@@ -66,7 +66,7 @@ if (import.meta.main) {
   const [firstAccount] = await wallet.getAccounts();
   const client = await SigningCosmWasmClient.connectWithSigner(config.rpcEndpoint, wallet, {
     prefix: config.prefix,
-    gasPrice: config.gasPrice,
+    gasPrice: GasPrice.fromString(config.gasPrice),
   });
   const botAddress = firstAccount.address;
   console.log(`Bot address: ${botAddress}`);
