@@ -5,6 +5,6 @@
     }
   },
   "tasks": {
-    "update-lockfile": "deno cache --lock-write main.ts"
+    "update-lockfile": "deno cache --lock-write main.ts && deno cache group_test.ts"
   }
 }
