@@ -129,10 +129,10 @@ if (import.meta.main) {
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     const delay = publishedSince(beacon.round);
     if (!isMyGroup(botAddress, beacon.round)) {
-      console.log(`Got beacon #${beacon.round} after ${delay.toFixed(3)}s. Skipping.`);
+      console.log(`Got beacon #${beacon.round} after ${delay.toFixed(2)}s. Skipping.`);
       continue;
     } else {
-      console.log(`Got beacon #${beacon.round} after ${delay.toFixed(3)}s.`);
+      console.log(`Got beacon #${beacon.round} after ${delay.toFixed(2)}s.`);
     }
 
     const broadcastTime = Date.now() / 1000;
@@ -187,9 +187,11 @@ if (import.meta.main) {
     const commitTime = block.header.time.getTime() / 1000; // seconds with fractional part
     const diff = commitTime - publishTime;
     console.info(
-      `Broadcast time (local): ${broadcastTime}; Drand publish time: ${publishTime}; Commit time: ${commitTime}; Diff: ${
+      `Broadcast time (local): ${
+        broadcastTime.toFixed(2)
+      }; Drand publish time: ${publishTime}; Commit time: ${commitTime.toFixed(2)}; Diff: ${
         diff.toFixed(
-          3,
+          2,
         )
       }`,
     );
