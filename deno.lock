@@ -1,11 +1,6 @@
 {
   "version": "2",
-  "remote": {
-    "https://deno.land/std@0.177.0/fmt/colors.ts": "938c5d44d889fb82eff6c358bea8baa7e85950a16c9f6dae3ec3a7a729164471",
-    "https://deno.land/std@0.177.0/testing/_diff.ts": "1a3c044aedf77647d6cac86b798c6417603361b66b54c53331b312caeb447aea",
-    "https://deno.land/std@0.177.0/testing/_format.ts": "a69126e8a469009adf4cf2a50af889aca364c349797e63174884a52ff75cf4c7",
-    "https://deno.land/std@0.177.0/testing/asserts.ts": "984ab0bfb3faeed92ffaa3a6b06536c66811185328c5dd146257c702c41b01ab"
-  },
+  "remote": {},
   "npm": {
     "specifiers": {
       "@cosmjs/cosmwasm-stargate": "@cosmjs/cosmwasm-stargate@0.29.5",
@@ -15,17 +10,14 @@
       "@cosmjs/proto-signing": "@cosmjs/proto-signing@0.29.5",
       "@cosmjs/stargate": "@cosmjs/stargate@0.29.5",
       "@cosmjs/utils": "@cosmjs/utils@0.29.5",
-      "cosmjs-types": "cosmjs-types@0.6.0",
-      "drand-client": "drand-client@1.0.0-pre.0",
-      "drand-client@1.0.0-pre.5": "drand-client@1.0.0-pre.5",
-      "drand-client@1.0.0-pre.6": "drand-client@1.0.0-pre.6",
-      "drand-client@^1.0.0-pre.9": "drand-client@1.0.0-pre.9"
+      "cosmjs-types": "cosmjs-types@0.6.1",
+      "drand-client@^1.0.0-pre.10": "drand-client@1.0.0-pre.10"
     },
     "packages": {
       "@confio/ics23@0.6.8": {
         "integrity": "sha512-wB6uo+3A50m0sW/EWcU64xpV/8wShZ6bMTa7pF8eYsTrSkQA7oLUIJcs/wb8g4y2Oyq701BaGiO6n/ak5WXO1w==",
         "dependencies": {
-          "@noble/hashes": "@noble/hashes@1.1.4",
+          "@noble/hashes": "@noble/hashes@1.2.0",
           "protobufjs": "protobufjs@6.11.3"
         }
       },
@@ -60,10 +52,10 @@
           "@cosmjs/encoding": "@cosmjs/encoding@0.29.5",
           "@cosmjs/math": "@cosmjs/math@0.29.5",
           "@cosmjs/utils": "@cosmjs/utils@0.29.5",
-          "@noble/hashes": "@noble/hashes@1.1.4",
+          "@noble/hashes": "@noble/hashes@1.2.0",
           "bn.js": "bn.js@5.2.1",
           "elliptic": "elliptic@6.5.4",
-          "libsodium-wrappers": "libsodium-wrappers@0.7.10"
+          "libsodium-wrappers": "libsodium-wrappers@0.7.11"
         }
       },
       "@cosmjs/encoding@0.29.5": {
@@ -154,8 +146,8 @@
         "integrity": "sha512-mIYqC2jMX7Lcu1QtU/FFftMPDSXNCdlGex6BSf5nPojHjnzzBgs1klFWpB1R8YjqHmOO9xrCzF19f2c42+z3vg==",
         "dependencies": {}
       },
-      "@noble/hashes@1.1.4": {
-        "integrity": "sha512-+PYsVPrTSqtVjatKt2A/Proukn2Yrz61OBThOCKErc5w2/r1Fh37vbDv0Eah7pyNltrmacjwTvdw3JoR+WE4TA==",
+      "@noble/hashes@1.2.0": {
+        "integrity": "sha512-FZfhjEDbT5GRswV3C6uvLPHMiVD6lQBmpoX5+eSiPaMTXte/IKqI5dykDxzZB/WBeK/CDuQRBWarPdi3FNY2zQ==",
         "dependencies": {}
       },
       "@protobufjs/aspromise@1.1.2": {
@@ -205,8 +197,8 @@
         "integrity": "sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==",
         "dependencies": {}
       },
-      "@types/node@18.11.12": {
-        "integrity": "sha512-FgD3NtTAKvyMmD44T07zz2fEf+OKwutgBCEVM8GcvMGVGaDktiLNTDvPwC/LUe3PinMW+X6CuLOF2Ui1mAlSXg==",
+      "@types/node@18.14.6": {
+        "integrity": "sha512-93+VvleD3mXwlLI/xASjw0FzKcwzl3OdTCzm1LaRfqgS21gfFtK3zDXM5Op9TeeMsJVOaJ2VRDpT9q4Y3d0AvA==",
         "dependencies": {}
       },
       "axios@0.21.4": {
@@ -242,40 +234,22 @@
           "protobufjs": "protobufjs@6.11.3"
         }
       },
-      "cosmjs-types@0.6.0": {
-        "integrity": "sha512-KfJkR7OuheVIavhyNN5GX+lmu9875vVgr48GtkleUomtvQqtv1RyRvsU4Ezpy6T/Wq0FWHnw2y3GoZ+c+rkrMw==",
+      "cosmjs-types@0.6.1": {
+        "integrity": "sha512-fRz6yzElHHBULDyLArF/G1UkkTWW4r3RondBUGnmSsZWYI5NpfDn32MVa5aRmpaaf4tJI2cbnXHs9fykwU7Ttg==",
         "dependencies": {
           "long": "long@4.0.0",
           "protobufjs": "protobufjs@6.11.3"
         }
       },
-      "define-properties@1.1.4": {
-        "integrity": "sha512-uckOqKcfaVvtBdsVkdPv3XjveQJsNQqmhXgRi8uhvWWuPYZCNlzT8qAyblUgNoXdHdjMTzAqeGjAoli8f+bzPA==",
+      "define-properties@1.2.0": {
+        "integrity": "sha512-xvqAVKGfT1+UAvPwKTVw/njhdQ8ZhXK4lI0bCIuCMrp2up9nPnaDftrLtmpTazqd1o+UY4zgzU+avtMbDP+ldA==",
         "dependencies": {
           "has-property-descriptors": "has-property-descriptors@1.0.0",
           "object-keys": "object-keys@1.1.1"
         }
       },
-      "drand-client@1.0.0-pre.0": {
-        "integrity": "sha512-1+/ZjRsT6aezmxB8xykOOMl+4f94k3yMiwS9TITBjU4BEHQrbyXUeOYZElyP267TgowJQrrQwaPdM1FgzmriLA==",
-        "dependencies": {
-          "@noble/bls12-381": "@noble/bls12-381@1.4.0"
-        }
-      },
-      "drand-client@1.0.0-pre.5": {
-        "integrity": "sha512-A2FURtHTZQdjxZ0d8By6jLQFcweAZdzqeBpqTy0AKxQu0d1rXRJs1+OBPUmVFlldp6d3fGqZfQDcOKfgGwbsKg==",
-        "dependencies": {
-          "@noble/bls12-381": "@noble/bls12-381@1.4.0"
-        }
-      },
-      "drand-client@1.0.0-pre.6": {
-        "integrity": "sha512-vsmh+7xBba8j2j9jNPCXguqT2j+KCb3jyq9CuLBx+4930DgPDXcTdvfm0AM5r76NXAwLN+92UqXYJJXS6nXXSQ==",
-        "dependencies": {
-          "@noble/bls12-381": "@noble/bls12-381@1.4.0"
-        }
-      },
-      "drand-client@1.0.0-pre.9": {
-        "integrity": "sha512-4j5bcBL1i56hGb543U9jufzty7QPXZGhtJIFwgKBOzjAel27I4CUeTjoXKt0RI983E7+hm2xF1MaEDvMMSHhUQ==",
+      "drand-client@1.0.0-pre.10": {
+        "integrity": "sha512-Fh2esx+rEg/57NSDpgaOw/gyduzNqbl9rS/t6BRlvRZP9P7QkAzuv/WpacMJoc/uQCUqbB540lihrrFraTbAKQ==",
         "dependencies": {
           "@noble/bls12-381": "@noble/bls12-381@1.4.0"
         }
@@ -300,8 +274,8 @@
         "integrity": "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==",
         "dependencies": {}
       },
-      "get-intrinsic@1.1.3": {
-        "integrity": "sha512-QJVz1Tj7MS099PevUG5jvnt9tSkXN8K14dxQlikJuPt4uD9hHAHjLyLBiLR5zELelBdD9QNRAXZzsJx0WaDL9A==",
+      "get-intrinsic@1.2.0": {
+        "integrity": "sha512-L049y6nFOuom5wGyRc3/gdTLO94dySVKRACj1RmJZBQXlbTMhtNIgkWkUHq+jYmZvKf14EW1EoJnnjbmoHij0Q==",
         "dependencies": {
           "function-bind": "function-bind@1.1.1",
           "has": "has@1.0.3",
@@ -311,13 +285,13 @@
       "globalthis@1.0.3": {
         "integrity": "sha512-sFdI5LyBiNTHjRd7cGPWapiHWMOXKyuBNX/cWJ3NfzrZQVa8GI/8cofCl74AOVqq9W5kNmguTIzJ/1s2gyI9wA==",
         "dependencies": {
-          "define-properties": "define-properties@1.1.4"
+          "define-properties": "define-properties@1.2.0"
         }
       },
       "has-property-descriptors@1.0.0": {
         "integrity": "sha512-62DVLZGoiEBDHQyqG4w9xCuZ7eJEwNmJRWw2VY84Oedb7WFcA27fiEVe8oUQx9hAUJ4ekurquucTGwsyO1XGdQ==",
         "dependencies": {
-          "get-intrinsic": "get-intrinsic@1.1.3"
+          "get-intrinsic": "get-intrinsic@1.2.0"
         }
       },
       "has-symbols@1.0.3": {
@@ -355,14 +329,14 @@
           "ws": "ws@7.5.9"
         }
       },
-      "libsodium-wrappers@0.7.10": {
-        "integrity": "sha512-pO3F1Q9NPLB/MWIhehim42b/Fwb30JNScCNh8TcQ/kIc+qGLQch8ag8wb0keK3EP5kbGakk1H8Wwo7v+36rNQg==",
+      "libsodium-wrappers@0.7.11": {
+        "integrity": "sha512-SrcLtXj7BM19vUKtQuyQKiQCRJPgbpauzl3s0rSwD+60wtHqSUuqcoawlMDheCJga85nKOQwxNYQxf/CKAvs6Q==",
         "dependencies": {
-          "libsodium": "libsodium@0.7.10"
+          "libsodium": "libsodium@0.7.11"
         }
       },
-      "libsodium@0.7.10": {
-        "integrity": "sha512-eY+z7hDrDKxkAK+QKZVNv92A5KYkxfvIshtBJkmg5TSiCnYqZP3i9OO9whE79Pwgm4jGaoHgkM4ao/b9Cyu4zQ==",
+      "libsodium@0.7.11": {
+        "integrity": "sha512-WPfJ7sS53I2s4iM58QxY3Inb83/6mjlYgcmZs7DJsvDlnmVUwNinBCi5vBT43P6bHRy01O4zsMU2CoVR6xJ40A==",
         "dependencies": {}
       },
       "long@4.0.0": {
@@ -399,7 +373,7 @@
           "@protobufjs/pool": "@protobufjs/pool@1.1.0",
           "@protobufjs/utf8": "@protobufjs/utf8@1.1.0",
           "@types/long": "@types/long@4.0.2",
-          "@types/node": "@types/node@18.11.12",
+          "@types/node": "@types/node@18.14.6",
           "long": "long@4.0.0"
         }
       },

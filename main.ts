@@ -1,4 +1,4 @@
-import { FastestNodeClient, watch } from "npm:drand-client@^1.0.0-pre.9";
+import { FastestNodeClient, watch } from "npm:drand-client@^1.0.0-pre.10";
 import { Coin, CosmWasmClient, SigningCosmWasmClient } from "npm:@cosmjs/cosmwasm-stargate";
 import { assertIsDeliverTxSuccess, calculateFee, GasPrice, logs } from "npm:@cosmjs/stargate";
 import { toUtf8 } from "npm:@cosmjs/encoding";

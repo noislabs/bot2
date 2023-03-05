@@ -1,4 +1,4 @@
-import { ChainOptions } from "npm:drand-client@^1.0.0-pre.9";
+import { ChainOptions } from "npm:drand-client@^1.0.0-pre.10";
 
 const chainHash = "8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce";
 const publicKey =
