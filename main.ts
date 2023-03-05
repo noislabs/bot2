@@ -128,11 +128,11 @@ if (import.meta.main) {
   const abortController = new AbortController();
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     const delay = publishedSince(beacon.round);
-    console.log(`Got beacon of round: ${beacon.round} after ${delay.toFixed(3)}s`);
-
     if (!isMyGroup(botAddress, beacon.round)) {
-      console.log(`Not my turn, skipping.`);
+      console.log(`Got beacon #${beacon.round} after ${delay.toFixed(3)}s. Skipping.`);
       continue;
+    } else {
+      console.log(`Got beacon #${beacon.round} after ${delay.toFixed(3)}s.`);
     }
 
     const broadcastTime = Date.now() / 1000;
