@@ -8,28 +8,16 @@ export function group(address: string): "A" | "B" {
 }
 
 /**
- * Rounds
- *
- * 110147 skip
- * 110148 skip
- * 110149 skip
- * 110150 A
- * 110151 skip
- * 110152 skip
- * 110153 skip
- * 110154 skip
- * 110155 B
- * 110156 skip
- * 110157 skip
- * 110158 skip
- * 110159 skip
- * 110160 A
+ * All rounds not ending on 0 are skipped. Rounds divisible by 20 to to group B and the others go to group A.
  */
 export function eligibleGroup(round: number): "A" | "B" | null {
-  if (round % 5 != 0) return null;
+  if (!round) throw new Error("Round is falsy");
+  if (!Number.isInteger(round)) throw new Error("Round value not an Integer");
 
-  if (round % 10 == 0) return "A";
-  else return "B";
+  if (round % 10 != 0) return null;
+
+  if (round % 20 == 0) return "B";
+  else return "A";
 }
 
 export function isMyGroup(address: string, round: number): boolean {
