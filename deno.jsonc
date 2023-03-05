@@ -3,5 +3,8 @@
     "options": {
       "lineWidth": 100
     }
+  },
+  "tasks": {
+    "update-lockfile": "deno cache --lock-write main.ts"
   }
 }
