@@ -7,8 +7,28 @@ export function group(address: string): "A" | "B" {
   else return "B";
 }
 
-export function eligibleGroup(round: number): "A" | "B" {
-  if (round % 2 == 0) return "A";
+/**
+ * Rounds
+ *
+ * 110147 skip
+ * 110148 skip
+ * 110149 skip
+ * 110150 A
+ * 110151 skip
+ * 110152 skip
+ * 110153 skip
+ * 110154 skip
+ * 110155 B
+ * 110156 skip
+ * 110157 skip
+ * 110158 skip
+ * 110159 skip
+ * 110160 A
+ */
+export function eligibleGroup(round: number): "A" | "B" | null {
+  if (round % 5 != 0) return null;
+
+  if (round % 10 == 0) return "A";
   else return "B";
 }
 

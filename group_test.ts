@@ -11,9 +11,21 @@ Deno.test("group works", () => {
 });
 
 Deno.test("eligibleGroup works", () => {
-  assertEquals(eligibleGroup(1), "B");
-  assertEquals(eligibleGroup(2), "A");
-  assertEquals(eligibleGroup(3), "B");
-  assertEquals(eligibleGroup(4), "A");
-  assertEquals(eligibleGroup(5), "B");
+  assertEquals(eligibleGroup(10), "A");
+  assertEquals(eligibleGroup(11), null);
+  assertEquals(eligibleGroup(12), null);
+  assertEquals(eligibleGroup(13), null);
+  assertEquals(eligibleGroup(14), null);
+  assertEquals(eligibleGroup(15), "B");
+  assertEquals(eligibleGroup(16), null);
+  assertEquals(eligibleGroup(17), null);
+  assertEquals(eligibleGroup(18), null);
+  assertEquals(eligibleGroup(19), null);
+  assertEquals(eligibleGroup(20), "A");
+  assertEquals(eligibleGroup(21), null);
+  assertEquals(eligibleGroup(22), null);
+  assertEquals(eligibleGroup(23), null);
+  assertEquals(eligibleGroup(24), null);
+  assertEquals(eligibleGroup(25), "B");
+  assertEquals(eligibleGroup(26), null);
 });
