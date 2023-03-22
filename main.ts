@@ -10,6 +10,8 @@ import { MsgExecuteContract } from "npm:cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
 import { group, isMyGroup } from "./group.ts";
 
+const gasLimit = 650_000;
+
 function printableCoin(coin: Coin): string {
   if (coin.denom?.startsWith("u")) {
     const ticker = coin.denom.slice(1).toUpperCase();
@@ -82,8 +84,6 @@ if (import.meta.main) {
     console.log(`Sign data set to: ${JSON.stringify(nextSignData)}`);
   };
 
-  const fee = calculateFee(750_000, config.gasPrice);
-
   console.info(`Connected to RPC endpoint ${config.rpcEndpoint}.`);
   console.info(`Chain ID: ${await client.getChainId()}`);
   console.info(`Height: ${await client.getHeight()}`);
@@ -153,6 +153,7 @@ if (import.meta.main) {
         funds: [],
       }),
     };
+    const fee = calculateFee(gasLimit, config.gasPrice);
     const memo = `Insert randomness round: ${beacon.round}`;
     const signData = getNextSignData(); // Do this the manual way to save one query
     const signed = await client.sign(botAddress, [msg], fee, memo, signData);
@@ -179,8 +180,13 @@ if (import.meta.main) {
     assertIsDeliverTxSuccess(result);
     const parsedLogs = logs.parseRawLog(result.rawLog);
     const jobs = ibcPacketsSent(parsedLogs);
+    const wasmEvent = result.events.find((event) => (event.type == "wasm"));
+    const points = wasmEvent?.attributes.find((attr) => attr.key.startsWith("reward_points"))
+      ?.value;
+    const payout = wasmEvent?.attributes.find((attr) => attr.key.startsWith("reward_payout"))
+      ?.value;
     console.info(
-      `✔ Round ${beacon.round} (Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
+      `✔ Round ${beacon.round} (Points: ${points}; Payout: ${payout}; Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
     );
     const publishTime = timeOfRound(beacon.round);
     const { block } = await client.forceGetTmClient().block(result.height);
