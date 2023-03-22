@@ -1,8 +1,8 @@
 import { ChainOptions } from "npm:drand-client@^1.0.0-pre.10";
 
-const chainHash = "8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce";
+const chainHash = "dbd506d6ef76e5f386f41c651dcb808c5bcbd75471cc4eafa3f4df7ad4e4c493";
 const publicKey =
-  "868f005eb8e6e4ca0a47c8a77ceaa5309a47978a7c71bc5cce96366b5d7a569937c529eeda66c7293784a9402801af31"; // (hex encoded)
+  "a0b862a7527fee3a731bcb59280ab6abd62d5c0b6ea03dc4ddf6612fdfc9d01f01c31542541771903475eb1ec6615f8d0df0b8b6dce385811d6dcf8cbefb8759e5e616a3dfd054c928940766d9a5b9db91e3b697e5d70a975181e007f87fca5e";
 
 export const drandOptions: ChainOptions = {
   disableBeaconVerification: true,
@@ -11,15 +11,16 @@ export const drandOptions: ChainOptions = {
 };
 
 export const drandUrls = [
-  "https://api.drand.sh",
-  "https://api2.drand.sh",
-  "https://api3.drand.sh",
-  "https://drand.cloudflare.com",
+  // `https://api.drand.sh/${chainHash}`,
+  `https://api2.drand.sh/${chainHash}`,
+  `https://api3.drand.sh/${chainHash}`,
+  `https://drand.cloudflare.com/${chainHash}`,
   // ...
 ];
 
-const DRAND_GENESIS = 1595431050;
-const DRAND_ROUND_LENGTH = 30; // in ms
+// https://api3.drand.sh/dbd506d6ef76e5f386f41c651dcb808c5bcbd75471cc4eafa3f4df7ad4e4c493/info
+const DRAND_GENESIS = 1677685200;
+const DRAND_ROUND_LENGTH = 3;
 
 // Time of round in seconds.
 //
