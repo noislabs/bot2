@@ -10,7 +10,7 @@ import { MsgExecuteContract } from "npm:cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
 import { group, isMyGroup } from "./group.ts";
 
-const gasLimit = 650_000;
+const gasLimit = 600_000;
 
 function printableCoin(coin: Coin): string {
   if (coin.denom?.startsWith("u")) {
