@@ -61,7 +61,7 @@ Install Deno as written above, then install NodeJS and PM2:
 ```sh
 wget -O nodejs.deb https://deb.nodesource.com/node_16.x/pool/main/n/nodejs/nodejs_16.17.1-deb-1nodesource1_amd64.deb \
   && sudo dpkg -i nodejs.deb \
-  && npm install pm2 -g \
+  && sudo npm install pm2 -g \
   && cd $HOME/bot2
 ```
 
