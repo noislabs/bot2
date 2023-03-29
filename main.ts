@@ -147,7 +147,6 @@ if (import.meta.main) {
             add_round: {
               round: beacon.round,
               signature: beacon.signature,
-              previous_signature: beacon.previous_signature,
             },
           }),
         ),
