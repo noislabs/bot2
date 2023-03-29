@@ -67,7 +67,6 @@ if (import.meta.main) {
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: config.prefix });
   const [firstAccount] = await wallet.getAccounts();
   const client = await SigningCosmWasmClient.connectWithSigner(config.rpcEndpoint, wallet, {
-    prefix: config.prefix,
     gasPrice: GasPrice.fromString(config.gasPrice),
   });
   const botAddress = firstAccount.address;
