@@ -2,7 +2,7 @@
   "rpcEndpoint": "https://nois-testnet-rpc.itrocket.net:443",
   "rpcEndpoint2": "",
   "rpcEndpoint3": "",
-  "contract": "nois1a4g7duyu45m0y2ex7s0u8kad87w6ee70v3nz45mh89mjr7zae4pqffrtcz",
+  "contract": "nois14xef285hz5cx5q9hh32p9nztu3cct4g44sxjgx3dmftt2tj2rweqkjextk",
   "mnemonic": "",
   "denom": "unois",
   "gasPrice": "0.05unois",
