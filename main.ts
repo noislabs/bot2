@@ -130,10 +130,10 @@ if (import.meta.main) {
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     const delay = publishedSince(beacon.round);
     if (!isMyGroup(botAddress, beacon.round)) {
-      console.log(`Got beacon #${beacon.round} after ${delay.toFixed(2)}s. Skipping.`);
+      console.log(`Got beacon #${beacon.round} after ${delay}ms. Skipping.`);
       continue;
     } else {
-      console.log(`Got beacon #${beacon.round} after ${delay.toFixed(2)}s.`);
+      console.log(`Got beacon #${beacon.round} after ${delay}ms.`);
     }
 
     const broadcastTime = Date.now() / 1000;

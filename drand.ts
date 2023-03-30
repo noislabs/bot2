@@ -30,8 +30,8 @@ export function timeOfRound(round: number): number {
 }
 
 /**
- * Time between publishing and now in seconds
+ * Time between publishing and now in milliseconds
  */
 export function publishedSince(round: number): number {
-  return Date.now() / 1000 - timeOfRound(round);
+  return Date.now() - timeOfRound(round) * 1000;
 }
