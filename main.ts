@@ -10,7 +10,10 @@ import { MsgExecuteContract } from "npm:cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
 import { group, isMyGroup } from "./group.ts";
 
-const gasLimit = 600_000;
+// Constants
+const gasLimitRegister = 200_000;
+const gasLimitAddBeacon = 600_000;
+const userAgent = "bot2";
 
 function printableCoin(coin: Coin): string {
   if (coin.denom?.startsWith("u")) {
@@ -67,7 +70,6 @@ if (import.meta.main) {
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: config.prefix });
   const [firstAccount] = await wallet.getAccounts();
   const client = await SigningCosmWasmClient.connectWithSigner(config.rpcEndpoint, wallet, {
-    prefix: config.prefix,
     gasPrice: GasPrice.fromString(config.gasPrice),
   });
   const botAddress = firstAccount.address;
@@ -98,13 +100,12 @@ if (import.meta.main) {
   const moniker = config.moniker;
   if (moniker) {
     console.info("Registering this bot ...");
+    const fee = calculateFee(gasLimitRegister, config.gasPrice);
     await client.execute(
       botAddress,
       config.contract,
-      {
-        register_bot: { moniker: moniker },
-      },
-      "auto",
+      { register_bot: { moniker: moniker } },
+      fee,
     );
   }
 
@@ -129,10 +130,10 @@ if (import.meta.main) {
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     const delay = publishedSince(beacon.round);
     if (!isMyGroup(botAddress, beacon.round)) {
-      console.log(`Got beacon #${beacon.round} after ${delay.toFixed(2)}s. Skipping.`);
+      console.log(`Got beacon #${beacon.round} after ${delay}ms. Skipping.`);
       continue;
     } else {
-      console.log(`Got beacon #${beacon.round} after ${delay.toFixed(2)}s.`);
+      console.log(`Got beacon #${beacon.round} after ${delay}ms.`);
     }
 
     const broadcastTime = Date.now() / 1000;
@@ -146,15 +147,14 @@ if (import.meta.main) {
             add_round: {
               round: beacon.round,
               signature: beacon.signature,
-              previous_signature: beacon.previous_signature,
             },
           }),
         ),
         funds: [],
       }),
     };
-    const fee = calculateFee(gasLimit, config.gasPrice);
-    const memo = `Insert randomness round: ${beacon.round}`;
+    const fee = calculateFee(gasLimitAddBeacon, config.gasPrice);
+    const memo = `Add round: ${beacon.round} (${userAgent})`;
     const signData = getNextSignData(); // Do this the manual way to save one query
     const signed = await client.sign(botAddress, [msg], fee, memo, signData);
     const tx = Uint8Array.from(TxRaw.encode(signed).finish());
