@@ -1,14 +1,23 @@
 import { FastestNodeClient, watch } from "npm:drand-client@^1.0.0-pre.10";
-import { Coin, CosmWasmClient, SigningCosmWasmClient } from "npm:@cosmjs/cosmwasm-stargate";
-import { assertIsDeliverTxSuccess, calculateFee, GasPrice, logs } from "npm:@cosmjs/stargate";
-import { toUtf8 } from "npm:@cosmjs/encoding";
-import { Decimal } from "npm:@cosmjs/math";
-import { DirectSecp256k1HdWallet } from "npm:@cosmjs/proto-signing";
-import { isDefined, sleep } from "npm:@cosmjs/utils";
+
 import { TxRaw } from "npm:cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import { MsgExecuteContract } from "npm:cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
 import { group, isMyGroup } from "./group.ts";
+import {
+  assertIsDeliverTxSuccess,
+  calculateFee,
+  Coin,
+  CosmWasmClient,
+  Decimal,
+  DirectSecp256k1HdWallet,
+  GasPrice,
+  isDefined,
+  logs,
+  SigningCosmWasmClient,
+  sleep,
+  toUtf8,
+} from "./deps.ts";
 
 // Constants
 const gasLimitRegister = 200_000;
@@ -206,9 +215,7 @@ if (import.meta.main) {
     // the balance of the bot.
     setTimeout(() => {
       client.getBalance(botAddress, config.denom).then(
-        (balance: unknown) => {
-          console.log(`Balance: ${printableCoin(balance)}`);
-        },
+        (balance) => console.log(`Balance: ${printableCoin(balance)}`),
         (error: unknown) => console.warn(`Error getting bot balance: ${error}`),
       );
     }, 5_000);

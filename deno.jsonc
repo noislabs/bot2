@@ -3,6 +3,6 @@
     "lineWidth": 100
   },
   "tasks": {
-    "update-lockfile": "deno cache --lock-write main.ts && deno cache group_test.ts"
+    "update-lockfile": "deno cache --lock-write main.ts deps.ts && deno cache group_test.ts"
   }
 }

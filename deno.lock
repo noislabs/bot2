@@ -8,151 +8,152 @@
   },
   "npm": {
     "specifiers": {
-      "@cosmjs/cosmwasm-stargate": "@cosmjs/cosmwasm-stargate@0.29.5",
-      "@cosmjs/crypto": "@cosmjs/crypto@0.29.5",
-      "@cosmjs/encoding": "@cosmjs/encoding@0.29.5",
-      "@cosmjs/math": "@cosmjs/math@0.29.5",
-      "@cosmjs/proto-signing": "@cosmjs/proto-signing@0.29.5",
-      "@cosmjs/stargate": "@cosmjs/stargate@0.29.5",
-      "@cosmjs/utils": "@cosmjs/utils@0.29.5",
-      "cosmjs-types": "cosmjs-types@0.6.1",
+      "@cosmjs/amino@^0.31.0": "@cosmjs/amino@0.31.0",
+      "@cosmjs/cosmwasm-stargate@^0.31.0": "@cosmjs/cosmwasm-stargate@0.31.0",
+      "@cosmjs/crypto@^0.31.0": "@cosmjs/crypto@0.31.0",
+      "@cosmjs/encoding@^0.31.0": "@cosmjs/encoding@0.31.0",
+      "@cosmjs/math@^0.31.0": "@cosmjs/math@0.31.0",
+      "@cosmjs/proto-signing@^0.31.0": "@cosmjs/proto-signing@0.31.0",
+      "@cosmjs/stargate@^0.31.0": "@cosmjs/stargate@0.31.0",
+      "@cosmjs/utils@^0.31.0": "@cosmjs/utils@0.31.0",
+      "cosmjs-types": "cosmjs-types@0.8.0",
       "drand-client@^1.0.0-pre.10": "drand-client@1.0.0-pre.10"
     },
     "packages": {
       "@confio/ics23@0.6.8": {
         "integrity": "sha512-wB6uo+3A50m0sW/EWcU64xpV/8wShZ6bMTa7pF8eYsTrSkQA7oLUIJcs/wb8g4y2Oyq701BaGiO6n/ak5WXO1w==",
         "dependencies": {
-          "@noble/hashes": "@noble/hashes@1.2.0",
+          "@noble/hashes": "@noble/hashes@1.3.1",
           "protobufjs": "protobufjs@6.11.3"
         }
       },
-      "@cosmjs/amino@0.29.5": {
-        "integrity": "sha512-Qo8jpC0BiziTSUqpkNatBcwtKNhCovUnFul9SlT/74JUCdLYaeG5hxr3q1cssQt++l4LvlcpF+OUXL48XjNjLw==",
+      "@cosmjs/amino@0.31.0": {
+        "integrity": "sha512-xJ5CCEK7H79FTpOuEmlpSzVI+ZeYESTVvO3wHDgbnceIyAne3C68SvyaKqLUR4uJB0Z4q4+DZHbqW6itUiv4lA==",
         "dependencies": {
-          "@cosmjs/crypto": "@cosmjs/crypto@0.29.5",
-          "@cosmjs/encoding": "@cosmjs/encoding@0.29.5",
-          "@cosmjs/math": "@cosmjs/math@0.29.5",
-          "@cosmjs/utils": "@cosmjs/utils@0.29.5"
+          "@cosmjs/crypto": "@cosmjs/crypto@0.31.0",
+          "@cosmjs/encoding": "@cosmjs/encoding@0.31.0",
+          "@cosmjs/math": "@cosmjs/math@0.31.0",
+          "@cosmjs/utils": "@cosmjs/utils@0.31.0"
         }
       },
-      "@cosmjs/cosmwasm-stargate@0.29.5": {
-        "integrity": "sha512-TNdSvm2tEE3XMCuxHxquzls56t40hC8qnLeYJWHsY2ECZmRK3KrnpRReEr7N7bLtODToK7X/riYrV0JaYxjrYA==",
+      "@cosmjs/cosmwasm-stargate@0.31.0": {
+        "integrity": "sha512-l6aX++3LhaAGZO46qIgrrNF40lYhOrdPfl35Z32ks6Wf3mwgbQEZwaxnoGzwUePY7/yaIiEFJ1JO6MlVPZVuag==",
         "dependencies": {
-          "@cosmjs/amino": "@cosmjs/amino@0.29.5",
-          "@cosmjs/crypto": "@cosmjs/crypto@0.29.5",
-          "@cosmjs/encoding": "@cosmjs/encoding@0.29.5",
-          "@cosmjs/math": "@cosmjs/math@0.29.5",
-          "@cosmjs/proto-signing": "@cosmjs/proto-signing@0.29.5",
-          "@cosmjs/stargate": "@cosmjs/stargate@0.29.5",
-          "@cosmjs/tendermint-rpc": "@cosmjs/tendermint-rpc@0.29.5",
-          "@cosmjs/utils": "@cosmjs/utils@0.29.5",
-          "cosmjs-types": "cosmjs-types@0.5.2",
+          "@cosmjs/amino": "@cosmjs/amino@0.31.0",
+          "@cosmjs/crypto": "@cosmjs/crypto@0.31.0",
+          "@cosmjs/encoding": "@cosmjs/encoding@0.31.0",
+          "@cosmjs/math": "@cosmjs/math@0.31.0",
+          "@cosmjs/proto-signing": "@cosmjs/proto-signing@0.31.0",
+          "@cosmjs/stargate": "@cosmjs/stargate@0.31.0",
+          "@cosmjs/tendermint-rpc": "@cosmjs/tendermint-rpc@0.31.0",
+          "@cosmjs/utils": "@cosmjs/utils@0.31.0",
+          "cosmjs-types": "cosmjs-types@0.8.0",
           "long": "long@4.0.0",
           "pako": "pako@2.1.0"
         }
       },
-      "@cosmjs/crypto@0.29.5": {
-        "integrity": "sha512-2bKkaLGictaNL0UipQCL6C1afaisv6k8Wr/GCLx9FqiyFkh9ZgRHDyetD64ZsjnWV/N/D44s/esI+k6oPREaiQ==",
+      "@cosmjs/crypto@0.31.0": {
+        "integrity": "sha512-UaqCe6Tgh0pe1QlZ66E13t6FlIF86QrnBXXq+EN7Xe1Rouza3fJ1ojGlPleJZkBoq3tAyYVIOOqdZIxtVj/sIQ==",
         "dependencies": {
-          "@cosmjs/encoding": "@cosmjs/encoding@0.29.5",
-          "@cosmjs/math": "@cosmjs/math@0.29.5",
-          "@cosmjs/utils": "@cosmjs/utils@0.29.5",
-          "@noble/hashes": "@noble/hashes@1.2.0",
+          "@cosmjs/encoding": "@cosmjs/encoding@0.31.0",
+          "@cosmjs/math": "@cosmjs/math@0.31.0",
+          "@cosmjs/utils": "@cosmjs/utils@0.31.0",
+          "@noble/hashes": "@noble/hashes@1.3.1",
           "bn.js": "bn.js@5.2.1",
           "elliptic": "elliptic@6.5.4",
-          "libsodium-wrappers": "libsodium-wrappers@0.7.11"
+          "libsodium-wrappers-sumo": "libsodium-wrappers-sumo@0.7.11"
         }
       },
-      "@cosmjs/encoding@0.29.5": {
-        "integrity": "sha512-G4rGl/Jg4dMCw5u6PEZHZcoHnUBlukZODHbm/wcL4Uu91fkn5jVo5cXXZcvs4VCkArVGrEj/52eUgTZCmOBGWQ==",
+      "@cosmjs/encoding@0.31.0": {
+        "integrity": "sha512-NYGQDRxT7MIRSlcbAezwxK0FqnaSPKCH7O32cmfpHNWorFxhy9lwmBoCvoe59Kd0HmArI4h+NGzLEfX3OLnA4Q==",
         "dependencies": {
           "base64-js": "base64-js@1.5.1",
           "bech32": "bech32@1.1.4",
           "readonly-date": "readonly-date@1.0.0"
         }
       },
-      "@cosmjs/json-rpc@0.29.5": {
-        "integrity": "sha512-C78+X06l+r9xwdM1yFWIpGl03LhB9NdM1xvZpQHwgCOl0Ir/WV8pw48y3Ez2awAoUBRfTeejPe4KvrE6NoIi/w==",
+      "@cosmjs/json-rpc@0.31.0": {
+        "integrity": "sha512-Ix2Cil2qysiLNrX+E0w3vtwCrqxGVq8jklpLA7B2vtMrw7tru/rS65fdFSy8ep0wUNLL6Ud32VXa5K0YObDOMA==",
         "dependencies": {
-          "@cosmjs/stream": "@cosmjs/stream@0.29.5",
+          "@cosmjs/stream": "@cosmjs/stream@0.31.0",
           "xstream": "xstream@11.14.0"
         }
       },
-      "@cosmjs/math@0.29.5": {
-        "integrity": "sha512-2GjKcv+A9f86MAWYLUkjhw1/WpRl2R1BTb3m9qPG7lzMA7ioYff9jY5SPCfafKdxM4TIQGxXQlYGewQL16O68Q==",
+      "@cosmjs/math@0.31.0": {
+        "integrity": "sha512-Sb/8Ry/+gKJaYiV6X8q45kxXC9FoV98XCY1WXtu0JQwOi61VCG2VXsURQnVvZ/EhR/CuT/swOlNKrqEs3da0fw==",
         "dependencies": {
           "bn.js": "bn.js@5.2.1"
         }
       },
-      "@cosmjs/proto-signing@0.29.5": {
-        "integrity": "sha512-QRrS7CiKaoETdgIqvi/7JC2qCwCR7lnWaUsTzh/XfRy3McLkEd+cXbKAW3cygykv7IN0VAEIhZd2lyIfT8KwNA==",
+      "@cosmjs/proto-signing@0.31.0": {
+        "integrity": "sha512-JNlyOJRkn8EKB9mCthkjr6lVX6eyVQ09PFdmB4/DR874E62dFTvQ+YvyKMAgN7K7Dcjj26dVlAD3f6Xs7YOGDg==",
         "dependencies": {
-          "@cosmjs/amino": "@cosmjs/amino@0.29.5",
-          "@cosmjs/crypto": "@cosmjs/crypto@0.29.5",
-          "@cosmjs/encoding": "@cosmjs/encoding@0.29.5",
-          "@cosmjs/math": "@cosmjs/math@0.29.5",
-          "@cosmjs/utils": "@cosmjs/utils@0.29.5",
-          "cosmjs-types": "cosmjs-types@0.5.2",
+          "@cosmjs/amino": "@cosmjs/amino@0.31.0",
+          "@cosmjs/crypto": "@cosmjs/crypto@0.31.0",
+          "@cosmjs/encoding": "@cosmjs/encoding@0.31.0",
+          "@cosmjs/math": "@cosmjs/math@0.31.0",
+          "@cosmjs/utils": "@cosmjs/utils@0.31.0",
+          "cosmjs-types": "cosmjs-types@0.8.0",
           "long": "long@4.0.0"
         }
       },
-      "@cosmjs/socket@0.29.5_ws@7.5.9": {
-        "integrity": "sha512-5VYDupIWbIXq3ftPV1LkS5Ya/T7Ol/AzWVhNxZ79hPe/mBfv1bGau/LqIYOm2zxGlgm9hBHOTmWGqNYDwr9LNQ==",
+      "@cosmjs/socket@0.31.0_ws@7.5.9": {
+        "integrity": "sha512-WDh9gTyiP3OCXvSAJJn33+Ef3XqMWag+bpR1TdMBxTmlTxuvU+kPy4cf6P2OF+jkkUBEA5Se2EAju0eFbJMT+w==",
         "dependencies": {
-          "@cosmjs/stream": "@cosmjs/stream@0.29.5",
+          "@cosmjs/stream": "@cosmjs/stream@0.31.0",
           "isomorphic-ws": "isomorphic-ws@4.0.1_ws@7.5.9",
           "ws": "ws@7.5.9",
           "xstream": "xstream@11.14.0"
         }
       },
-      "@cosmjs/stargate@0.29.5": {
-        "integrity": "sha512-hjEv8UUlJruLrYGJcUZXM/CziaINOKwfVm2BoSdUnNTMxGvY/jC1ABHKeZUYt9oXHxEJ1n9+pDqzbKc8pT0nBw==",
+      "@cosmjs/stargate@0.31.0": {
+        "integrity": "sha512-GYhk9lzZPj/QmYHC0VV/4AMoRzVcOP+EnB1YZCoWlBdLuVmpBYKRagJqWIrIwdk1E0gF2ZoESd2TYfdh1fqIpg==",
         "dependencies": {
           "@confio/ics23": "@confio/ics23@0.6.8",
-          "@cosmjs/amino": "@cosmjs/amino@0.29.5",
-          "@cosmjs/encoding": "@cosmjs/encoding@0.29.5",
-          "@cosmjs/math": "@cosmjs/math@0.29.5",
-          "@cosmjs/proto-signing": "@cosmjs/proto-signing@0.29.5",
-          "@cosmjs/stream": "@cosmjs/stream@0.29.5",
-          "@cosmjs/tendermint-rpc": "@cosmjs/tendermint-rpc@0.29.5",
-          "@cosmjs/utils": "@cosmjs/utils@0.29.5",
-          "cosmjs-types": "cosmjs-types@0.5.2",
+          "@cosmjs/amino": "@cosmjs/amino@0.31.0",
+          "@cosmjs/encoding": "@cosmjs/encoding@0.31.0",
+          "@cosmjs/math": "@cosmjs/math@0.31.0",
+          "@cosmjs/proto-signing": "@cosmjs/proto-signing@0.31.0",
+          "@cosmjs/stream": "@cosmjs/stream@0.31.0",
+          "@cosmjs/tendermint-rpc": "@cosmjs/tendermint-rpc@0.31.0",
+          "@cosmjs/utils": "@cosmjs/utils@0.31.0",
+          "cosmjs-types": "cosmjs-types@0.8.0",
           "long": "long@4.0.0",
           "protobufjs": "protobufjs@6.11.3",
           "xstream": "xstream@11.14.0"
         }
       },
-      "@cosmjs/stream@0.29.5": {
-        "integrity": "sha512-TToTDWyH1p05GBtF0Y8jFw2C+4783ueDCmDyxOMM6EU82IqpmIbfwcdMOCAm0JhnyMh+ocdebbFvnX/sGKzRAA==",
+      "@cosmjs/stream@0.31.0": {
+        "integrity": "sha512-Y+aSHwhHkLGIaQOdqRob+yga2zr9ifl9gZDKD+B7+R5pdWN5f2TTDhYWxA6YZcZ6xRmfr7u8a7tDh7iYLC/zKA==",
         "dependencies": {
           "xstream": "xstream@11.14.0"
         }
       },
-      "@cosmjs/tendermint-rpc@0.29.5": {
-        "integrity": "sha512-ar80twieuAxsy0x2za/aO3kBr2DFPAXDmk2ikDbmkda+qqfXgl35l9CVAAjKRqd9d+cRvbQyb5M4wy6XQpEV6w==",
+      "@cosmjs/tendermint-rpc@0.31.0": {
+        "integrity": "sha512-yo9xbeuI6UoEKIhFZ9g0dvUKLqnBzwdpEc/uldQygQc51j38gQVwFko+6sjmhieJqRYYvrYumcbJMiV6GFM9aA==",
         "dependencies": {
-          "@cosmjs/crypto": "@cosmjs/crypto@0.29.5",
-          "@cosmjs/encoding": "@cosmjs/encoding@0.29.5",
-          "@cosmjs/json-rpc": "@cosmjs/json-rpc@0.29.5",
-          "@cosmjs/math": "@cosmjs/math@0.29.5",
-          "@cosmjs/socket": "@cosmjs/socket@0.29.5_ws@7.5.9",
-          "@cosmjs/stream": "@cosmjs/stream@0.29.5",
-          "@cosmjs/utils": "@cosmjs/utils@0.29.5",
+          "@cosmjs/crypto": "@cosmjs/crypto@0.31.0",
+          "@cosmjs/encoding": "@cosmjs/encoding@0.31.0",
+          "@cosmjs/json-rpc": "@cosmjs/json-rpc@0.31.0",
+          "@cosmjs/math": "@cosmjs/math@0.31.0",
+          "@cosmjs/socket": "@cosmjs/socket@0.31.0_ws@7.5.9",
+          "@cosmjs/stream": "@cosmjs/stream@0.31.0",
+          "@cosmjs/utils": "@cosmjs/utils@0.31.0",
           "axios": "axios@0.21.4",
           "readonly-date": "readonly-date@1.0.0",
           "xstream": "xstream@11.14.0"
         }
       },
-      "@cosmjs/utils@0.29.5": {
-        "integrity": "sha512-m7h+RXDUxOzEOGt4P+3OVPX7PuakZT3GBmaM/Y2u+abN3xZkziykD/NvedYFvvCCdQo714XcGl33bwifS9FZPQ==",
+      "@cosmjs/utils@0.31.0": {
+        "integrity": "sha512-nNcycZWUYLNJlrIXgpcgVRqdl6BXjF4YlXdxobQWpW9Tikk61bEGeAFhDYtC0PwHlokCNw0KxWiHGJL4nL7Q5A==",
         "dependencies": {}
       },
       "@noble/bls12-381@1.4.0": {
         "integrity": "sha512-mIYqC2jMX7Lcu1QtU/FFftMPDSXNCdlGex6BSf5nPojHjnzzBgs1klFWpB1R8YjqHmOO9xrCzF19f2c42+z3vg==",
         "dependencies": {}
       },
-      "@noble/hashes@1.2.0": {
-        "integrity": "sha512-FZfhjEDbT5GRswV3C6uvLPHMiVD6lQBmpoX5+eSiPaMTXte/IKqI5dykDxzZB/WBeK/CDuQRBWarPdi3FNY2zQ==",
+      "@noble/hashes@1.3.1": {
+        "integrity": "sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==",
         "dependencies": {}
       },
       "@protobufjs/aspromise@1.1.2": {
@@ -202,8 +203,8 @@
         "integrity": "sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==",
         "dependencies": {}
       },
-      "@types/node@18.14.6": {
-        "integrity": "sha512-93+VvleD3mXwlLI/xASjw0FzKcwzl3OdTCzm1LaRfqgS21gfFtK3zDXM5Op9TeeMsJVOaJ2VRDpT9q4Y3d0AvA==",
+      "@types/node@20.3.1": {
+        "integrity": "sha512-EhcH/wvidPy1WeML3TtYFGR83UzjxeWRen9V402T8aUGYsCHOmfoisV3ZSg03gAFIbLq8TnWOJ0f4cALtnSEUg==",
         "dependencies": {}
       },
       "axios@0.21.4": {
@@ -232,15 +233,8 @@
         "integrity": "sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w==",
         "dependencies": {}
       },
-      "cosmjs-types@0.5.2": {
-        "integrity": "sha512-zxCtIJj8v3Di7s39uN4LNcN3HIE1z0B9Z0SPE8ZNQR0oSzsuSe1ACgxoFkvhkS7WBasCAFcglS11G2hyfd5tPg==",
-        "dependencies": {
-          "long": "long@4.0.0",
-          "protobufjs": "protobufjs@6.11.3"
-        }
-      },
-      "cosmjs-types@0.6.1": {
-        "integrity": "sha512-fRz6yzElHHBULDyLArF/G1UkkTWW4r3RondBUGnmSsZWYI5NpfDn32MVa5aRmpaaf4tJI2cbnXHs9fykwU7Ttg==",
+      "cosmjs-types@0.8.0": {
+        "integrity": "sha512-Q2Mj95Fl0PYMWEhA2LuGEIhipF7mQwd9gTQ85DdP9jjjopeoGaDxvmPa5nakNzsq7FnO1DMTatXTAx6bxMH7Lg==",
         "dependencies": {
           "long": "long@4.0.0",
           "protobufjs": "protobufjs@6.11.3"
@@ -279,11 +273,12 @@
         "integrity": "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==",
         "dependencies": {}
       },
-      "get-intrinsic@1.2.0": {
-        "integrity": "sha512-L049y6nFOuom5wGyRc3/gdTLO94dySVKRACj1RmJZBQXlbTMhtNIgkWkUHq+jYmZvKf14EW1EoJnnjbmoHij0Q==",
+      "get-intrinsic@1.2.1": {
+        "integrity": "sha512-2DcsyfABl+gVHEfCOaTrWgyt+tb6MSEGmKq+kI5HwLbIYgjgmMcV8KQ41uaKz1xxUcn9tJtgFbQUEVcEbd0FYw==",
         "dependencies": {
           "function-bind": "function-bind@1.1.1",
           "has": "has@1.0.3",
+          "has-proto": "has-proto@1.0.1",
           "has-symbols": "has-symbols@1.0.3"
         }
       },
@@ -296,8 +291,12 @@
       "has-property-descriptors@1.0.0": {
         "integrity": "sha512-62DVLZGoiEBDHQyqG4w9xCuZ7eJEwNmJRWw2VY84Oedb7WFcA27fiEVe8oUQx9hAUJ4ekurquucTGwsyO1XGdQ==",
         "dependencies": {
-          "get-intrinsic": "get-intrinsic@1.2.0"
+          "get-intrinsic": "get-intrinsic@1.2.1"
         }
+      },
+      "has-proto@1.0.1": {
+        "integrity": "sha512-7qE+iP+O+bgF9clE5+UoBFzE65mlBiVj3tKCrlNQ0Ogwm0BjpT/gK4SlLYDMybDh5I3TCTKnPPa0oMG7JDYrhg==",
+        "dependencies": {}
       },
       "has-symbols@1.0.3": {
         "integrity": "sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A==",
@@ -334,15 +333,15 @@
           "ws": "ws@7.5.9"
         }
       },
-      "libsodium-wrappers@0.7.11": {
-        "integrity": "sha512-SrcLtXj7BM19vUKtQuyQKiQCRJPgbpauzl3s0rSwD+60wtHqSUuqcoawlMDheCJga85nKOQwxNYQxf/CKAvs6Q==",
-        "dependencies": {
-          "libsodium": "libsodium@0.7.11"
-        }
-      },
-      "libsodium@0.7.11": {
-        "integrity": "sha512-WPfJ7sS53I2s4iM58QxY3Inb83/6mjlYgcmZs7DJsvDlnmVUwNinBCi5vBT43P6bHRy01O4zsMU2CoVR6xJ40A==",
+      "libsodium-sumo@0.7.11": {
+        "integrity": "sha512-bY+7ph7xpk51Ez2GbE10lXAQ5sJma6NghcIDaSPbM/G9elfrjLa0COHl/7P6Wb/JizQzl5UQontOOP1z0VwbLA==",
         "dependencies": {}
+      },
+      "libsodium-wrappers-sumo@0.7.11": {
+        "integrity": "sha512-DGypHOmJbB1nZn89KIfGOAkDgfv5N6SBGC3Qvmy/On0P0WD1JQvNRS/e3UL3aFF+xC0m+MYz5M+MnRnK2HMrKQ==",
+        "dependencies": {
+          "libsodium-sumo": "libsodium-sumo@0.7.11"
+        }
       },
       "long@4.0.0": {
         "integrity": "sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==",
@@ -378,7 +377,7 @@
           "@protobufjs/pool": "@protobufjs/pool@1.1.0",
           "@protobufjs/utf8": "@protobufjs/utf8@1.1.0",
           "@types/long": "@types/long@4.0.2",
-          "@types/node": "@types/node@18.14.6",
+          "@types/node": "@types/node@20.3.1",
           "long": "long@4.0.0"
         }
       },

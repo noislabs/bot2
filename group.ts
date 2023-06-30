@@ -1,5 +1,4 @@
-import { sha256 } from "npm:@cosmjs/crypto";
-import { toUtf8 } from "npm:@cosmjs/encoding";
+import { sha256, toUtf8 } from "./deps.ts";
 
 export function group(address: string): "A" | "B" {
   const hash = sha256(toUtf8(address))[0];
