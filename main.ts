@@ -1,5 +1,4 @@
 import { TxRaw } from "npm:cosmjs-types/cosmos/tx/v1beta1/tx.js";
-import { MsgExecuteContract } from "npm:cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
 import { group, isMyGroup } from "./group.ts";
 import {
@@ -15,10 +14,10 @@ import {
   logs,
   SigningCosmWasmClient,
   sleep,
-  toUtf8,
   watch,
 } from "./deps.ts";
 import { BeaconCache } from "./cache.ts";
+import { makeAddBeaconMessage } from "./drand_contract.ts";
 
 // Constants
 const gasLimitRegister = 200_000;
@@ -150,22 +149,7 @@ if (import.meta.main) {
     }
 
     const broadcastTime = Date.now() / 1000;
-    const msg = {
-      typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
-      value: MsgExecuteContract.fromPartial({
-        sender: botAddress,
-        contract: config.contract,
-        msg: toUtf8(
-          JSON.stringify({
-            add_round: {
-              round: beacon.round,
-              signature: beacon.signature,
-            },
-          }),
-        ),
-        funds: [],
-      }),
-    };
+    const msg = makeAddBeaconMessage(botAddress, config.contract, beacon);
     const fee = calculateFee(gasLimitAddBeacon, config.gasPrice);
     const memo = `Add round: ${beacon.round} (${userAgent})`;
     const signData = getNextSignData(); // Do this the manual way to save one query
