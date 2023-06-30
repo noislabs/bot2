@@ -14,5 +14,5 @@ export { isDefined, sleep } from "npm:@cosmjs/utils@^0.31.0";
 export type { Coin } from "npm:@cosmjs/amino@^0.31.0";
 
 // drand
-export type { ChainOptions } from "npm:drand-client@^1.0.0-pre.10";
-export { FastestNodeClient, watch } from "npm:drand-client@^1.0.0-pre.10";
+export type { ChainOptions } from "npm:drand-client@^1.0.0";
+export { FastestNodeClient, watch } from "npm:drand-client@^1.0.0";
