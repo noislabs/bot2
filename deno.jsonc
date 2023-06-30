@@ -1,8 +1,6 @@
 {
   "fmt": {
-    "options": {
-      "lineWidth": 100
-    }
+    "lineWidth": 100
   },
   "tasks": {
     "update-lockfile": "deno cache --lock-write main.ts && deno cache group_test.ts"
