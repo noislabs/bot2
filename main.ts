@@ -1,5 +1,3 @@
-import { FastestNodeClient, watch } from "npm:drand-client@^1.0.0-pre.10";
-
 import { TxRaw } from "npm:cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import { MsgExecuteContract } from "npm:cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
@@ -11,12 +9,14 @@ import {
   CosmWasmClient,
   Decimal,
   DirectSecp256k1HdWallet,
+  FastestNodeClient,
   GasPrice,
   isDefined,
   logs,
   SigningCosmWasmClient,
   sleep,
   toUtf8,
+  watch,
 } from "./deps.ts";
 
 // Constants
