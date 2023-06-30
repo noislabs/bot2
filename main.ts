@@ -18,6 +18,7 @@ import {
   toUtf8,
   watch,
 } from "./deps.ts";
+import { BeaconCache } from "./cache.ts";
 
 // Constants
 const gasLimitRegister = 200_000;
@@ -135,8 +136,11 @@ if (import.meta.main) {
 
   const fastestNodeClient = new FastestNodeClient(drandUrls, drandOptions);
   fastestNodeClient.start();
+  const cache = new BeaconCache(fastestNodeClient, 200 /* 10 min of beacons */);
   const abortController = new AbortController();
   for await (const beacon of watch(fastestNodeClient, abortController)) {
+    cache.add(beacon.round, beacon.signature);
+
     const delay = publishedSince(beacon.round);
     if (!isMyGroup(botAddress, beacon.round)) {
       console.log(`Got beacon #${beacon.round} after ${delay}ms. Skipping.`);
