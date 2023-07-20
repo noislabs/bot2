@@ -140,12 +140,12 @@ if (import.meta.main) {
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     cache.add(beacon.round, beacon.signature);
 
-    const delay = publishedSince(beacon.round);
+    const baseText = `➘ #${beacon.round} received after ${publishedSince(beacon.round)}ms`;
     if (!isMyGroup(botAddress, beacon.round)) {
-      console.log(`Got beacon #${beacon.round} after ${delay}ms. Skipping.`);
+      console.log(`${baseText}. Skipping.`);
       continue;
     } else {
-      console.log(`Got beacon #${beacon.round} after ${delay}ms.`);
+      console.log(`${baseText}. Submitting.`);
     }
 
     const broadcastTime = Date.now() / 1000;
@@ -161,15 +161,15 @@ if (import.meta.main) {
     const p3 = broadcaster3?.broadcastTx(tx);
 
     p1.then(
-      () => console.log("Broadcast 1 succeeded"),
+      () => console.log(`➚ #${beacon.round} broadcast 1 succeeded (${publishedSince(beacon.round)}ms after publish time)`),
       (err: unknown) => console.warn(`Broadcast 1 failed: ${err}`),
     );
     p2?.then(
-      () => console.log("Broadcast 2 succeeded"),
+      () => console.log(`➚ #${beacon.round} broadcast 2 succeeded (${publishedSince(beacon.round)}ms after publish time)`),
       (err: unknown) => console.warn(`Broadcast 2 failed: ${err}`),
     );
     p3?.then(
-      () => console.log("Broadcast 3 succeeded"),
+      () => console.log(`➚ #${beacon.round} broadcast 3 succeeded (${publishedSince(beacon.round)}ms after publish time)`),
       (err: unknown) => console.warn(`Broadcast 3 failed: ${err}`),
     );
 
@@ -183,7 +183,7 @@ if (import.meta.main) {
     const payout = wasmEvent?.attributes.find((attr) => attr.key.startsWith("reward_payout"))
       ?.value;
     console.info(
-      `✔ Round ${beacon.round} (Points: ${points}; Payout: ${payout}; Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
+      `✔ #${beacon.round} committed (Points: ${points}; Payout: ${payout}; Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
     );
     const publishTime = timeOfRound(beacon.round);
     const { block } = await client.forceGetTmClient().block(result.height);
