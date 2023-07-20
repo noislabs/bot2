@@ -161,15 +161,30 @@ if (import.meta.main) {
     const p3 = broadcaster3?.broadcastTx(tx);
 
     p1.then(
-      () => console.log(`➚ #${beacon.round} broadcast 1 succeeded (${publishedSince(beacon.round)}ms after publish time)`),
+      () => {
+        const t = publishedSince(beacon.round);
+        console.log(
+          `➚ #${beacon.round} broadcast 1 succeeded (${t}ms after publish time)`,
+        );
+      },
       (err: unknown) => console.warn(`Broadcast 1 failed: ${err}`),
     );
     p2?.then(
-      () => console.log(`➚ #${beacon.round} broadcast 2 succeeded (${publishedSince(beacon.round)}ms after publish time)`),
+      () => {
+        const t = publishedSince(beacon.round);
+        console.log(
+          `➚ #${beacon.round} broadcast 2 succeeded (${t}ms after publish time)`,
+        );
+      },
       (err: unknown) => console.warn(`Broadcast 2 failed: ${err}`),
     );
     p3?.then(
-      () => console.log(`➚ #${beacon.round} broadcast 3 succeeded (${publishedSince(beacon.round)}ms after publish time)`),
+      () => {
+        const t = publishedSince(beacon.round);
+        console.log(
+          `➚ #${beacon.round} broadcast 3 succeeded (${t}ms after publish time)`,
+        );
+      },
       (err: unknown) => console.warn(`Broadcast 3 failed: ${err}`),
     );
 
