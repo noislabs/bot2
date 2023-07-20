@@ -2,6 +2,7 @@ import { TxRaw } from "npm:cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
 import { group, isMyGroup } from "./group.ts";
 import {
+  assert,
   assertIsDeliverTxSuccess,
   calculateFee,
   Coin,
@@ -62,6 +63,8 @@ if (import.meta.main) {
   const { default: config } = await import("./config.json", {
     assert: { type: "json" },
   });
+  assert(config.contract, `Config field "contract" must be set.`);
+  assert(config.rpcEndpoint, `Config field "rpcEndpoint" must be set.`);
 
   const mnemonic = await (async () => {
     if (config.mnemonic) {
