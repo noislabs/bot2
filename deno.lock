@@ -17,7 +17,7 @@
       "@cosmjs/stargate@^0.31.0": "@cosmjs/stargate@0.31.0",
       "@cosmjs/utils@^0.31.0": "@cosmjs/utils@0.31.0",
       "cosmjs-types": "cosmjs-types@0.8.0",
-      "drand-client@^1.0.0": "drand-client@1.1.0"
+      "drand-client@^1.2.0": "drand-client@1.2.0"
     },
     "packages": {
       "@confio/ics23@0.6.8": {
@@ -203,8 +203,8 @@
         "integrity": "sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==",
         "dependencies": {}
       },
-      "@types/node@20.3.2": {
-        "integrity": "sha512-vOBLVQeCQfIcF/2Y7eKFTqrMnizK5lRNQ7ykML/5RuwVXVWxYkgwS7xbt4B6fKCUPgbSL5FSsjHQpaGQP/dQmw==",
+      "@types/node@20.4.2": {
+        "integrity": "sha512-Dd0BYtWgnWJKwO1jkmTrzofjK2QXXcai0dmtzvIBhcA+RsG5h8R3xlyta0kGOZRNfL9GuRtb1knmPEhQrePCEw==",
         "dependencies": {}
       },
       "axios@0.21.4": {
@@ -233,6 +233,13 @@
         "integrity": "sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w==",
         "dependencies": {}
       },
+      "buffer@6.0.3": {
+        "integrity": "sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==",
+        "dependencies": {
+          "base64-js": "base64-js@1.5.1",
+          "ieee754": "ieee754@1.2.1"
+        }
+      },
       "cosmjs-types@0.8.0": {
         "integrity": "sha512-Q2Mj95Fl0PYMWEhA2LuGEIhipF7mQwd9gTQ85DdP9jjjopeoGaDxvmPa5nakNzsq7FnO1DMTatXTAx6bxMH7Lg==",
         "dependencies": {
@@ -247,10 +254,11 @@
           "object-keys": "object-keys@1.1.1"
         }
       },
-      "drand-client@1.1.0": {
-        "integrity": "sha512-CszMNTfYxUafKp3eEJHbg5G4OO2Kh11XnWBQ8hnNYEfVybrxqsWLipagaLtT5mOXozB8aICoOCvZh3wYmTc8BQ==",
+      "drand-client@1.2.0": {
+        "integrity": "sha512-YrW18tVkVWJ0fm2J4bm52VPnAXgDYdeLlBwsWIxWM6bfJO50lh1Lr75rpbNM32eYqV6NMQL9VA/LNUw4jEg2zg==",
         "dependencies": {
-          "@noble/bls12-381": "@noble/bls12-381@1.4.0"
+          "@noble/bls12-381": "@noble/bls12-381@1.4.0",
+          "buffer": "buffer@6.0.3"
         }
       },
       "elliptic@6.5.4": {
@@ -323,6 +331,10 @@
           "minimalistic-crypto-utils": "minimalistic-crypto-utils@1.0.1"
         }
       },
+      "ieee754@1.2.1": {
+        "integrity": "sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==",
+        "dependencies": {}
+      },
       "inherits@2.0.4": {
         "integrity": "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==",
         "dependencies": {}
@@ -377,7 +389,7 @@
           "@protobufjs/pool": "@protobufjs/pool@1.1.0",
           "@protobufjs/utf8": "@protobufjs/utf8@1.1.0",
           "@types/long": "@types/long@4.0.2",
-          "@types/node": "@types/node@20.3.2",
+          "@types/node": "@types/node@20.4.2",
           "long": "long@4.0.0"
         }
       },
