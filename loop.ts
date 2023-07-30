@@ -1,6 +1,5 @@
 import { TxRaw } from "npm:cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import { publishedSince, timeOfRound } from "./drand.ts";
-import { isMyGroup } from "./group.ts";
 import {
   assertIsDeliverTxSuccess,
   calculateFee,

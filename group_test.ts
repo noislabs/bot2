@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.177.0/testing/asserts.ts";
-import { eligibleGroup, group } from "./group.ts";
+import { group } from "./group.ts";
 
 Deno.test("group works", () => {
   assertEquals(group("nois1ffy2rz96sjxzm2ezwkmvyeupktp7elt6w3xckt"), "B");
@@ -8,56 +8,4 @@ Deno.test("group works", () => {
   assertEquals(group("nois1wpy3gwlw4tt3uy0u5jrspfz0w9azztvlr0d04s"), "A");
   assertEquals(group("nois1rw47dxvhw3ahdlcznvwpcz43cdq8l0832eg6re"), "A");
   assertEquals(group("nois12a8yv4ndgnkygujj7cmmkfz2j9wjanezldwye0"), "B");
-});
-
-Deno.test("eligibleGroup works", () => {
-  assertEquals(eligibleGroup(1), null);
-  assertEquals(eligibleGroup(2), null);
-  assertEquals(eligibleGroup(3), null);
-  assertEquals(eligibleGroup(4), null);
-  assertEquals(eligibleGroup(5), null);
-  assertEquals(eligibleGroup(6), null);
-  assertEquals(eligibleGroup(7), null);
-  assertEquals(eligibleGroup(8), null);
-  assertEquals(eligibleGroup(9), null);
-  assertEquals(eligibleGroup(10), "A");
-  assertEquals(eligibleGroup(11), null);
-  assertEquals(eligibleGroup(12), null);
-  assertEquals(eligibleGroup(13), null);
-  assertEquals(eligibleGroup(14), null);
-  assertEquals(eligibleGroup(15), null);
-  assertEquals(eligibleGroup(16), null);
-  assertEquals(eligibleGroup(17), null);
-  assertEquals(eligibleGroup(18), null);
-  assertEquals(eligibleGroup(19), null);
-  assertEquals(eligibleGroup(20), "B");
-  assertEquals(eligibleGroup(21), null);
-  assertEquals(eligibleGroup(22), null);
-  assertEquals(eligibleGroup(23), null);
-  assertEquals(eligibleGroup(24), null);
-  assertEquals(eligibleGroup(25), null);
-  assertEquals(eligibleGroup(26), null);
-  assertEquals(eligibleGroup(27), null);
-  assertEquals(eligibleGroup(28), null);
-  assertEquals(eligibleGroup(29), null);
-  assertEquals(eligibleGroup(30), "A");
-  assertEquals(eligibleGroup(31), null);
-
-  assertEquals(eligibleGroup(111765), null);
-  assertEquals(eligibleGroup(111766), null);
-  assertEquals(eligibleGroup(111767), null);
-  assertEquals(eligibleGroup(111768), null);
-  assertEquals(eligibleGroup(111769), null);
-  assertEquals(eligibleGroup(111770), "A");
-  assertEquals(eligibleGroup(111771), null);
-  assertEquals(eligibleGroup(111772), null);
-  assertEquals(eligibleGroup(111773), null);
-  assertEquals(eligibleGroup(111774), null);
-  assertEquals(eligibleGroup(111775), null);
-  assertEquals(eligibleGroup(111776), null);
-  assertEquals(eligibleGroup(111777), null);
-  assertEquals(eligibleGroup(111778), null);
-  assertEquals(eligibleGroup(111779), null);
-  assertEquals(eligibleGroup(111780), "B");
-  assertEquals(eligibleGroup(111781), null);
 });
