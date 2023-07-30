@@ -1,9 +1,7 @@
-import { TxRaw } from "npm:cosmjs-types/cosmos/tx/v1beta1/tx.js";
-import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
-import { group, isMyGroup } from "./group.ts";
+import { drandOptions, drandUrls } from "./drand.ts";
+import { group } from "./group.ts";
 import {
   assert,
-  assertIsDeliverTxSuccess,
   calculateFee,
   Coin,
   CosmWasmClient,
@@ -11,14 +9,13 @@ import {
   DirectSecp256k1HdWallet,
   FastestNodeClient,
   GasPrice,
-  isDefined,
-  logs,
   SigningCosmWasmClient,
   sleep,
   watch,
 } from "./deps.ts";
 import { BeaconCache } from "./cache.ts";
-import { makeAddBeaconMessage } from "./drand_contract.ts";
+import { loop, SignData } from "./loop.ts";
+import { queryIsAllowListed } from "./drand_contract.ts";
 
 // Constants
 const gasLimitRegister = 200_000;
@@ -34,29 +31,16 @@ function printableCoin(coin: Coin): string {
   }
 }
 
-let nextSignData = {
+let nextSignData: SignData = {
   chainId: "",
   accountNumber: NaN,
   sequence: NaN,
 };
 
-function getNextSignData() {
+function getNextSignData(): SignData {
   const out = { ...nextSignData }; // copy values
   nextSignData.sequence += 1;
   return out;
-}
-
-// deno-lint-ignore no-explicit-any
-export function ibcPacketsSent(resultLogs: any) {
-  // deno-lint-ignore no-explicit-any
-  const allEvents = resultLogs.flatMap((log: any) => log.events);
-  // deno-lint-ignore no-explicit-any
-  const packetsEvents = allEvents.filter((e: any) => e.type === "send_packet");
-  // deno-lint-ignore no-explicit-any
-  const attributes = packetsEvents.flatMap((e: any) => e.attributes);
-  // deno-lint-ignore no-explicit-any
-  const packetsSentCount = attributes.filter((a: any) => a.key === "packet_sequence").length;
-  return packetsSentCount;
 }
 
 if (import.meta.main) {
@@ -126,9 +110,7 @@ if (import.meta.main) {
   await Promise.all([
     sleep(500), // the min waiting time
     (async function () {
-      const { listed } = await client.queryContractSmart(config.contract, {
-        is_allow_listed: { bot: botAddress },
-      });
+      const listed = await queryIsAllowListed(client, config.contract, botAddress);
       console.info(`Bot allow listed for rewards: ${listed}`);
     })(),
   ]);
@@ -143,87 +125,27 @@ if (import.meta.main) {
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     cache.add(beacon.round, beacon.signature);
 
-    const baseText = `➘ #${beacon.round} received after ${publishedSince(beacon.round)}ms`;
-    if (!isMyGroup(botAddress, beacon.round)) {
-      console.log(`${baseText}. Skipping.`);
-      continue;
-    } else {
-      console.log(`${baseText}. Submitting.`);
+    const didSubmit = await loop({
+      client,
+      broadcaster2,
+      broadcaster3,
+      getNextSignData,
+      gasLimitAddBeacon,
+      gasPrice: config.gasPrice,
+      botAddress,
+      drandAddress: config.contract,
+      userAgent,
+    }, beacon);
+
+    if (didSubmit) {
+      // Some seconds after the submission when things are idle, check and log
+      // the balance of the bot.
+      setTimeout(() => {
+        client.getBalance(botAddress, config.denom).then(
+          (balance) => console.log(`Balance: ${printableCoin(balance)}`),
+          (error: unknown) => console.warn(`Error getting bot balance: ${error}`),
+        );
+      });
     }
-
-    const broadcastTime = Date.now() / 1000;
-    const msg = makeAddBeaconMessage(botAddress, config.contract, beacon);
-    const fee = calculateFee(gasLimitAddBeacon, config.gasPrice);
-    const memo = `Add round: ${beacon.round} (${userAgent})`;
-    const signData = getNextSignData(); // Do this the manual way to save one query
-    const signed = await client.sign(botAddress, [msg], fee, memo, signData);
-    const tx = Uint8Array.from(TxRaw.encode(signed).finish());
-
-    const p1 = client.broadcastTx(tx);
-    const p2 = broadcaster2?.broadcastTx(tx);
-    const p3 = broadcaster3?.broadcastTx(tx);
-
-    p1.then(
-      () => {
-        const t = publishedSince(beacon.round);
-        console.log(
-          `➚ #${beacon.round} broadcast 1 succeeded (${t}ms after publish time)`,
-        );
-      },
-      (err: unknown) => console.warn(`Broadcast 1 failed: ${err}`),
-    );
-    p2?.then(
-      () => {
-        const t = publishedSince(beacon.round);
-        console.log(
-          `➚ #${beacon.round} broadcast 2 succeeded (${t}ms after publish time)`,
-        );
-      },
-      (err: unknown) => console.warn(`Broadcast 2 failed: ${err}`),
-    );
-    p3?.then(
-      () => {
-        const t = publishedSince(beacon.round);
-        console.log(
-          `➚ #${beacon.round} broadcast 3 succeeded (${t}ms after publish time)`,
-        );
-      },
-      (err: unknown) => console.warn(`Broadcast 3 failed: ${err}`),
-    );
-
-    const result = await Promise.any([p1, p2, p3].filter(isDefined));
-    assertIsDeliverTxSuccess(result);
-    const parsedLogs = logs.parseRawLog(result.rawLog);
-    const jobs = ibcPacketsSent(parsedLogs);
-    const wasmEvent = result.events.find((event) => (event.type == "wasm"));
-    const points = wasmEvent?.attributes.find((attr) => attr.key.startsWith("reward_points"))
-      ?.value;
-    const payout = wasmEvent?.attributes.find((attr) => attr.key.startsWith("reward_payout"))
-      ?.value;
-    console.info(
-      `✔ #${beacon.round} committed (Points: ${points}; Payout: ${payout}; Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
-    );
-    const publishTime = timeOfRound(beacon.round);
-    const { block } = await client.forceGetTmClient().block(result.height);
-    const commitTime = block.header.time.getTime() / 1000; // seconds with fractional part
-    const diff = commitTime - publishTime;
-    console.info(
-      `Broadcast time (local): ${
-        broadcastTime.toFixed(2)
-      }; Drand publish time: ${publishTime}; Commit time: ${commitTime.toFixed(2)}; Diff: ${
-        diff.toFixed(
-          2,
-        )
-      }`,
-    );
-
-    // Some seconds after the submission when things are idle, check and log
-    // the balance of the bot.
-    setTimeout(() => {
-      client.getBalance(botAddress, config.denom).then(
-        (balance) => console.log(`Balance: ${printableCoin(balance)}`),
-        (error: unknown) => console.warn(`Error getting bot balance: ${error}`),
-      );
-    }, 5_000);
   }
 }

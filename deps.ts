@@ -19,5 +19,5 @@ export type { Coin } from "npm:@cosmjs/amino@^0.31.0";
 export type { MsgExecuteContractEncodeObject } from "npm:@cosmjs/cosmwasm-stargate@^0.31.0";
 
 // drand
-export type { ChainClient, ChainOptions } from "npm:drand-client@^1.2.0";
+export type { ChainClient, ChainOptions, RandomnessBeacon } from "npm:drand-client@^1.2.0";
 export { FastestNodeClient, watch } from "npm:drand-client@^1.2.0";
