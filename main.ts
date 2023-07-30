@@ -1,4 +1,4 @@
-import { drandOptions, drandUrls } from "./drand.ts";
+import { drandOptions, drandUrls, publishedIn } from "./drand.ts";
 import { group } from "./group.ts";
 import {
   assert,
@@ -16,7 +16,7 @@ import {
 } from "./deps.ts";
 import { BeaconCache } from "./cache.ts";
 import { loop } from "./loop.ts";
-import { queryIsAllowListed } from "./drand_contract.ts";
+import { queryIsAllowListed, queryIsIncentivized } from "./drand_contract.ts";
 
 // Constants
 const gasLimitRegister = 200_000;
@@ -123,12 +123,28 @@ if (import.meta.main) {
   // Initialize local sign data
   await resetSignData();
 
+  const incentivizedRounds = new Map<number, Promise<boolean>>();
+
   const fastestNodeClient = new FastestNodeClient(drandUrls, drandOptions);
   fastestNodeClient.start();
   const cache = new BeaconCache(fastestNodeClient, 200 /* 10 min of beacons */);
   const abortController = new AbortController();
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     cache.add(beacon.round, beacon.signature);
+
+    setTimeout(() => {
+      // This is called 100ms after publishing time (might be some ms later)
+      // From here we have ~300ms until the beacon comes in which should be
+      // enough for the query to finish. In case the query is not yet done,
+      // we can wait for the promise to be resolved.
+      // console.log(`Now         : ${new Date().toISOString()}\nPublish time: ${new Date(timeOfRound(round)).toISOString()}`);
+      const round = beacon.round + 1;
+      const promise = queryIsIncentivized(client, config.contract, [round], botAddress).then(
+        (incentivized) => !!incentivized[0],
+        (_err) => false,
+      );
+      incentivizedRounds.set(round, promise);
+    }, publishedIn(beacon.round + 1) + 100);
 
     const didSubmit = await loop({
       client,
@@ -140,6 +156,7 @@ if (import.meta.main) {
       botAddress,
       drandAddress: config.contract,
       userAgent,
+      incentivizedRounds,
     }, beacon);
 
     if (didSubmit) {

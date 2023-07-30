@@ -43,6 +43,7 @@ export async function queryIsIncentivized(
   const { incentivized } = await client.queryContractSmart(contractAddress, {
     is_incentivized: { rounds, sender: botAddress },
   });
+  // console.log(`#${rounds[0]} incentivized query returned at ${publishedSince(rounds[0])}ms`)
   assert(Array.isArray(incentivized));
   return incentivized;
 }

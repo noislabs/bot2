@@ -10,7 +10,7 @@ import {
   SignerData,
   SigningCosmWasmClient,
 } from "./deps.ts";
-import { makeAddBeaconMessage, queryIsIncentivized } from "./drand_contract.ts";
+import { makeAddBeaconMessage } from "./drand_contract.ts";
 import { ibcPacketsSent } from "./ibc.ts";
 
 interface Capture {
@@ -23,6 +23,7 @@ interface Capture {
   gasPrice: string;
   userAgent: string;
   getNextSignData: () => SignerData;
+  incentivizedRounds: Map<number, Promise<boolean>>;
 }
 
 export async function loop(
@@ -36,22 +37,22 @@ export async function loop(
     gasPrice,
     userAgent,
     getNextSignData,
+    incentivizedRounds,
   }: Capture,
   beacon: RandomnessBeacon,
 ): Promise<boolean> {
   console.log(`➘ #${beacon.round} received after ${publishedSince(beacon.round)}ms`);
 
-  const isIncentivized = await queryIsIncentivized(
-    client,
-    drandAddress,
-    [beacon.round],
-    botAddress,
-  );
-
+  // We don't have evidence that this round is incentivized. This is no guarantee it did not
+  // get incentivized in the meantime, but we prefer to skip than risk the gas.
+  const isIncentivized = await incentivizedRounds.get(beacon.round);
   if (!isIncentivized) {
     console.log(`Skipping.`);
     return false;
   }
+
+  // Use this log to ensure awaiting the isIncentivized query does not slow us down.
+  console.log(`♪ #${beacon.round} ready for signing after ${publishedSince(beacon.round)}ms`);
 
   const broadcastTime = Date.now() / 1000;
   const msg = makeAddBeaconMessage(botAddress, drandAddress, beacon);
@@ -59,6 +60,9 @@ export async function loop(
   const memo = `Add round: ${beacon.round} (${userAgent})`;
   const signData = getNextSignData(); // Do this the manual way to save one query
   const signed = await client.sign(botAddress, [msg], fee, memo, signData);
+
+  // console.log(`♫ #${beacon.round} signed after ${publishedSince(beacon.round)}ms`);
+
   const tx = Uint8Array.from(TxRaw.encode(signed).finish());
 
   const p1 = client.broadcastTx(tx);

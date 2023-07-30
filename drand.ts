@@ -35,3 +35,10 @@ export function timeOfRound(round: number): number {
 export function publishedSince(round: number): number {
   return Date.now() - timeOfRound(round);
 }
+
+/**
+ * Time between now and publishing in milliseconds
+ */
+export function publishedIn(round: number): number {
+  return -publishedSince(round);
+}
