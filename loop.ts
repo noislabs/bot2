@@ -105,7 +105,7 @@ export async function loop(
   console.info(
     `✔ #${beacon.round} committed (Points: ${points}; Payout: ${payout}; Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
   );
-  const publishTime = timeOfRound(beacon.round);
+  const publishTime = timeOfRound(beacon.round) / 1000;
   const { block } = await client.forceGetTmClient().block(result.height);
   const commitTime = block.header.time.getTime() / 1000; // seconds with fractional part
   const diff = commitTime - publishTime;
