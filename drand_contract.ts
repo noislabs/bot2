@@ -1,6 +1,6 @@
 import { MsgExecuteContract } from "npm:cosmjs-types/cosmwasm/wasm/v1/tx.js";
 
-import { CosmWasmClient, MsgExecuteContractEncodeObject, toUtf8 } from "./deps.ts";
+import { assert, CosmWasmClient, MsgExecuteContractEncodeObject, toUtf8 } from "./deps.ts";
 
 export function makeAddBeaconMessage(
   senderAddress: string,
@@ -32,4 +32,17 @@ export async function queryIsAllowListed(
     is_allow_listed: { bot: botAddress },
   });
   return listed;
+}
+
+export async function queryIsIncentivized(
+  client: CosmWasmClient,
+  contractAddress: string,
+  rounds: number[],
+  botAddress: string,
+): Promise<boolean[]> {
+  const { incentivized } = await client.queryContractSmart(contractAddress, {
+    is_incentivized: { rounds, sender: botAddress },
+  });
+  assert(Array.isArray(incentivized));
+  return incentivized;
 }

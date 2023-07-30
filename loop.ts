@@ -11,7 +11,7 @@ import {
   SignerData,
   SigningCosmWasmClient,
 } from "./deps.ts";
-import { makeAddBeaconMessage } from "./drand_contract.ts";
+import { makeAddBeaconMessage, queryIsIncentivized } from "./drand_contract.ts";
 import { ibcPacketsSent } from "./ibc.ts";
 
 interface Capture {
@@ -40,12 +40,18 @@ export async function loop(
   }: Capture,
   beacon: RandomnessBeacon,
 ): Promise<boolean> {
-  const baseText = `➘ #${beacon.round} received after ${publishedSince(beacon.round)}ms`;
-  if (!isMyGroup(botAddress, beacon.round)) {
-    console.log(`${baseText}. Skipping.`);
+  console.log(`➘ #${beacon.round} received after ${publishedSince(beacon.round)}ms`);
+
+  const isIncentivized = await queryIsIncentivized(
+    client,
+    drandAddress,
+    [beacon.round],
+    botAddress,
+  );
+
+  if (!isIncentivized) {
+    console.log(`Skipping.`);
     return false;
-  } else {
-    console.log(`${baseText}. Submitting.`);
   }
 
   const broadcastTime = Date.now() / 1000;
