@@ -17,6 +17,7 @@ export { DirectSecp256k1HdWallet } from "npm:@cosmjs/proto-signing@^0.31.0";
 export { assert, isDefined, sleep } from "npm:@cosmjs/utils@^0.31.0";
 export type { Coin } from "npm:@cosmjs/amino@^0.31.0";
 export type { MsgExecuteContractEncodeObject } from "npm:@cosmjs/cosmwasm-stargate@^0.31.0";
+export type { SignerData } from "npm:@cosmjs/stargate@^0.31.0";
 
 // drand
 export type { ChainClient, ChainOptions, RandomnessBeacon } from "npm:drand-client@^1.2.0";

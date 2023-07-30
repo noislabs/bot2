@@ -9,12 +9,13 @@ import {
   DirectSecp256k1HdWallet,
   FastestNodeClient,
   GasPrice,
+  SignerData,
   SigningCosmWasmClient,
   sleep,
   watch,
 } from "./deps.ts";
 import { BeaconCache } from "./cache.ts";
-import { loop, SignData } from "./loop.ts";
+import { loop } from "./loop.ts";
 import { queryIsAllowListed } from "./drand_contract.ts";
 
 // Constants
@@ -31,13 +32,13 @@ function printableCoin(coin: Coin): string {
   }
 }
 
-let nextSignData: SignData = {
+let nextSignData: SignerData = {
   chainId: "",
   accountNumber: NaN,
   sequence: NaN,
 };
 
-function getNextSignData(): SignData {
+function getNextSignData(): SignerData {
   const out = { ...nextSignData }; // copy values
   nextSignData.sequence += 1;
   return out;

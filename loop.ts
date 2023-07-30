@@ -8,6 +8,7 @@ import {
   isDefined,
   logs,
   RandomnessBeacon,
+  SignerData,
   SigningCosmWasmClient,
 } from "./deps.ts";
 import { makeAddBeaconMessage } from "./drand_contract.ts";
@@ -22,13 +23,7 @@ interface Capture {
   gasLimitAddBeacon: number;
   gasPrice: string;
   userAgent: string;
-  getNextSignData: () => SignData;
-}
-
-export interface SignData {
-  chainId: string;
-  accountNumber: number;
-  sequence: number;
+  getNextSignData: () => SignerData;
 }
 
 export async function loop(
