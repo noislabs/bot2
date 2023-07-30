@@ -1,8 +1,8 @@
 import { TxRaw } from "npm:cosmjs-types/cosmos/tx/v1beta1/tx.js";
-import { MsgExecuteContract } from "npm:cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { drandOptions, drandUrls, publishedSince, timeOfRound } from "./drand.ts";
 import { group, isMyGroup } from "./group.ts";
 import {
+  assert,
   assertIsDeliverTxSuccess,
   calculateFee,
   Coin,
@@ -15,10 +15,10 @@ import {
   logs,
   SigningCosmWasmClient,
   sleep,
-  toUtf8,
   watch,
 } from "./deps.ts";
 import { BeaconCache } from "./cache.ts";
+import { makeAddBeaconMessage } from "./drand_contract.ts";
 
 // Constants
 const gasLimitRegister = 200_000;
@@ -63,6 +63,8 @@ if (import.meta.main) {
   const { default: config } = await import("./config.json", {
     assert: { type: "json" },
   });
+  assert(config.contract, `Config field "contract" must be set.`);
+  assert(config.rpcEndpoint, `Config field "rpcEndpoint" must be set.`);
 
   const mnemonic = await (async () => {
     if (config.mnemonic) {
@@ -141,31 +143,16 @@ if (import.meta.main) {
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     cache.add(beacon.round, beacon.signature);
 
-    const delay = publishedSince(beacon.round);
+    const baseText = `➘ #${beacon.round} received after ${publishedSince(beacon.round)}ms`;
     if (!isMyGroup(botAddress, beacon.round)) {
-      console.log(`Got beacon #${beacon.round} after ${delay}ms. Skipping.`);
+      console.log(`${baseText}. Skipping.`);
       continue;
     } else {
-      console.log(`Got beacon #${beacon.round} after ${delay}ms.`);
+      console.log(`${baseText}. Submitting.`);
     }
 
     const broadcastTime = Date.now() / 1000;
-    const msg = {
-      typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
-      value: MsgExecuteContract.fromPartial({
-        sender: botAddress,
-        contract: config.contract,
-        msg: toUtf8(
-          JSON.stringify({
-            add_round: {
-              round: beacon.round,
-              signature: beacon.signature,
-            },
-          }),
-        ),
-        funds: [],
-      }),
-    };
+    const msg = makeAddBeaconMessage(botAddress, config.contract, beacon);
     const fee = calculateFee(gasLimitAddBeacon, config.gasPrice);
     const memo = `Add round: ${beacon.round} (${userAgent})`;
     const signData = getNextSignData(); // Do this the manual way to save one query
@@ -177,15 +164,30 @@ if (import.meta.main) {
     const p3 = broadcaster3?.broadcastTx(tx);
 
     p1.then(
-      () => console.log("Broadcast 1 succeeded"),
+      () => {
+        const t = publishedSince(beacon.round);
+        console.log(
+          `➚ #${beacon.round} broadcast 1 succeeded (${t}ms after publish time)`,
+        );
+      },
       (err: unknown) => console.warn(`Broadcast 1 failed: ${err}`),
     );
     p2?.then(
-      () => console.log("Broadcast 2 succeeded"),
+      () => {
+        const t = publishedSince(beacon.round);
+        console.log(
+          `➚ #${beacon.round} broadcast 2 succeeded (${t}ms after publish time)`,
+        );
+      },
       (err: unknown) => console.warn(`Broadcast 2 failed: ${err}`),
     );
     p3?.then(
-      () => console.log("Broadcast 3 succeeded"),
+      () => {
+        const t = publishedSince(beacon.round);
+        console.log(
+          `➚ #${beacon.round} broadcast 3 succeeded (${t}ms after publish time)`,
+        );
+      },
       (err: unknown) => console.warn(`Broadcast 3 failed: ${err}`),
     );
 
@@ -199,7 +201,7 @@ if (import.meta.main) {
     const payout = wasmEvent?.attributes.find((attr) => attr.key.startsWith("reward_payout"))
       ?.value;
     console.info(
-      `✔ Round ${beacon.round} (Points: ${points}; Payout: ${payout}; Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
+      `✔ #${beacon.round} committed (Points: ${points}; Payout: ${payout}; Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
     );
     const publishTime = timeOfRound(beacon.round);
     const { block } = await client.forceGetTmClient().block(result.height);
