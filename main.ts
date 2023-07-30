@@ -130,7 +130,10 @@ if (import.meta.main) {
   const cache = new BeaconCache(fastestNodeClient, 200 /* 10 min of beacons */);
   const abortController = new AbortController();
   for await (const beacon of watch(fastestNodeClient, abortController)) {
-    cache.add(beacon.round, beacon.signature);
+    const n = beacon.round; // n is the round we just received and process now
+    const m = n + 1; // m := n+1 refers to the next round in this current loop
+
+    cache.add(n, beacon.signature);
 
     setTimeout(() => {
       // This is called 100ms after publishing time (might be some ms later)
@@ -138,13 +141,12 @@ if (import.meta.main) {
       // enough for the query to finish. In case the query is not yet done,
       // we can wait for the promise to be resolved.
       // console.log(`Now         : ${new Date().toISOString()}\nPublish time: ${new Date(timeOfRound(round)).toISOString()}`);
-      const round = beacon.round + 1;
-      const promise = queryIsIncentivized(client, config.contract, [round], botAddress).then(
+      const promise = queryIsIncentivized(client, config.contract, [m], botAddress).then(
         (incentivized) => !!incentivized[0],
         (_err) => false,
       );
-      incentivizedRounds.set(round, promise);
-    }, publishedIn(beacon.round + 1) + 100);
+      incentivizedRounds.set(m, promise);
+    }, publishedIn(m) + 100);
 
     const didSubmit = await loop({
       client,
