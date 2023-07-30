@@ -32,7 +32,11 @@ function printableCoin(coin: Coin): string {
   }
 }
 
-let nextSignData: SignerData = {
+type Mutable<Type> = {
+  -readonly [Key in keyof Type]: Type[Key];
+};
+
+let nextSignData: Mutable<SignerData> = {
   chainId: "",
   accountNumber: NaN,
   sequence: NaN,
