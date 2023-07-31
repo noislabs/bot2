@@ -17,6 +17,7 @@ import {
 import { BeaconCache } from "./cache.ts";
 import { loop } from "./loop.ts";
 import { queryIsAllowListed, queryIsIncentivized } from "./drand_contract.ts";
+import { connectTendermint } from "./tendermint.ts";
 
 // Constants
 const gasLimitRegister = 200_000;
@@ -70,7 +71,8 @@ if (import.meta.main) {
 
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: config.prefix });
   const [firstAccount] = await wallet.getAccounts();
-  const client = await SigningCosmWasmClient.connectWithSigner(config.rpcEndpoint, wallet, {
+  const tmClient = await connectTendermint(config.rpcEndpoint);
+  const client = await SigningCosmWasmClient.createWithSigner(tmClient, wallet, {
     gasPrice: GasPrice.fromString(config.gasPrice),
   });
   const botAddress = firstAccount.address;
@@ -150,6 +152,7 @@ if (import.meta.main) {
 
     const didSubmit = await loop({
       client,
+      tmClient,
       broadcaster2,
       broadcaster3,
       getNextSignData,
