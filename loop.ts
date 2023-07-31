@@ -9,12 +9,14 @@ import {
   RandomnessBeacon,
   SignerData,
   SigningCosmWasmClient,
+  TendermintClient,
 } from "./deps.ts";
 import { makeAddBeaconMessage } from "./drand_contract.ts";
 import { ibcPacketsSent } from "./ibc.ts";
 
 interface Capture {
   client: SigningCosmWasmClient;
+  tmClient: TendermintClient;
   broadcaster2: CosmWasmClient | null;
   broadcaster3: CosmWasmClient | null;
   botAddress: string;
@@ -29,6 +31,7 @@ interface Capture {
 export async function loop(
   {
     client,
+    tmClient,
     broadcaster2,
     broadcaster3,
     botAddress,
@@ -110,7 +113,7 @@ export async function loop(
     `✔ #${beacon.round} committed (Points: ${points}; Payout: ${payout}; Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
   );
   const publishTime = timeOfRound(beacon.round) / 1000;
-  const { block } = await client.forceGetTmClient().block(result.height);
+  const { block } = await tmClient.block(result.height);
   const commitTime = block.header.time.getTime() / 1000; // seconds with fractional part
   const diff = commitTime - publishTime;
   console.info(
