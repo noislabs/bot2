@@ -21,37 +21,33 @@ function parseRound(job: Job): number {
   return Uint53.fromString(round).toNumber();
 }
 
+function formatDuration(durationInMs: number): string {
+  const inSeconds = durationInMs / 1000;
+  return `${inSeconds.toFixed(1)}s`;
+}
+
 export class JobsObserver {
-  private readonly client: CosmWasmClient;
+  private readonly noisClient: CosmWasmClient;
   private readonly gateway: string;
-  private readonly abort: AbortController;
-  private readonly intervalId: number;
 
   public constructor(
     noisClient: CosmWasmClient,
     gatewayAddress: string,
-    abortController: AbortController,
-    pollInterval = 1000,
   ) {
-    this.client = noisClient;
+    this.noisClient = noisClient;
     this.gateway = gatewayAddress;
-    this.abort = abortController;
+  }
 
-    this.intervalId = setInterval(() => {
-      const query = { jobs_desc: { offset: null, limit: 3 } };
-      this.client.queryContractSmart(this.gateway, query).then(
-        ({ jobs }: JobsResponse) => {
-          if (jobs.length === 0) return; // Nothing to do for us
+  public async check(): Promise<void> {
+    const query = { jobs_desc: { offset: null, limit: 3 } };
+    const { jobs }: JobsResponse = await this.noisClient.queryContractSmart(this.gateway, query);
+    if (jobs.length === 0) return; // Nothing to do for us
 
-          const rounds = jobs.map(parseRound);
-          const roundInfos = rounds.map((round) => {
-            const due = timeOfRound(round) - Date.now() / 1000;
-            return `#${round} (due ${due.toFixed(1)}s)`;
-          });
-          console.log(`Jobs pending for rounds: %c${roundInfos.join(", ")}`, "color: orange");
-        },
-        (err) => console.error(err),
-      );
-    }, pollInterval);
+    const rounds = jobs.map(parseRound);
+    const roundInfos = rounds.map((round) => {
+      const due = timeOfRound(round) - Date.now();
+      return `#${round} (due ${formatDuration(due)})`;
+    });
+    console.log(`Jobs pending for rounds: %c${roundInfos.join(", ")}`, "color: orange");
   }
 }

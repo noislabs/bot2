@@ -118,13 +118,14 @@ if (import.meta.main) {
   await Promise.all([
     sleep(500), // the min waiting time
     (async function () {
-      const listed = await queryIsAllowListed(client, config.contract, botAddress);
+      const listed = await queryIsAllowListed(client, config.drandAddress, botAddress);
       console.info(`Bot allow listed for rewards: ${listed}`);
     })(),
   ]);
 
+  let jobs: JobsObserver | undefined;
   if (config.gatewayAddress) {
-    const _jobs = new JobsObserver(client, config.gatewayAddress, new AbortController());
+    jobs = new JobsObserver(client, config.gatewayAddress);
   }
 
   // Initialize local sign data
@@ -148,7 +149,7 @@ if (import.meta.main) {
       // enough for the query to finish. In case the query is not yet done,
       // we can wait for the promise to be resolved.
       // console.log(`Now         : ${new Date().toISOString()}\nPublish time: ${new Date(timeOfRound(round)).toISOString()}`);
-      const promise = queryIsIncentivized(client, config.contract, [m], botAddress).then(
+      const promise = queryIsIncentivized(client, config.drandAddress, [m], botAddress).then(
         (incentivized) => !!incentivized[0],
         (_err) => false,
       );
@@ -164,10 +165,23 @@ if (import.meta.main) {
       gasLimitAddBeacon,
       gasPrice: config.gasPrice,
       botAddress,
-      drandAddress: config.contract,
+      drandAddress: config.drandAddress,
       userAgent,
       incentivizedRounds,
     }, beacon);
+
+    // Check jobs every 1.5s, shifted 1200ms from the drand receiving
+    const shift = 1200;
+    setTimeout(() =>
+      jobs?.check().then(
+        (_) => {},
+        (err) => console.error(err),
+      ), shift);
+    setTimeout(() =>
+      jobs?.check().then(
+        (_) => {},
+        (err) => console.error(err),
+      ), shift + 1500);
 
     if (didSubmit) {
       // Some seconds after the submission when things are idle, check and log
