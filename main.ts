@@ -149,8 +149,7 @@ if (import.meta.main) {
       // enough for the query to finish. In case the query is not yet done,
       // we can wait for the promise to be resolved.
       // console.log(`Now         : ${new Date().toISOString()}\nPublish time: ${new Date(timeOfRound(round)).toISOString()}`);
-      const promise = queryIsIncentivized(client, config.drandAddress, [m], botAddress).then(
-        (incentivized) => !!incentivized[0],
+      const promise = queryIsIncentivized(client, config.drandAddress, m, botAddress).catch(
         (_err) => false,
       );
       incentivizedRounds.set(m, promise);

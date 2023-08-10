@@ -37,13 +37,15 @@ export async function queryIsAllowListed(
 export async function queryIsIncentivized(
   client: CosmWasmClient,
   contractAddress: string,
-  rounds: number[],
+  round: number,
   botAddress: string,
-): Promise<boolean[]> {
+): Promise<boolean> {
   const { incentivized } = await client.queryContractSmart(contractAddress, {
-    is_incentivized: { rounds, sender: botAddress },
+    is_incentivized: { rounds: [round], sender: botAddress },
   });
   // console.log(`#${rounds[0]} incentivized query returned at ${publishedSince(rounds[0])}ms`)
   assert(Array.isArray(incentivized));
-  return incentivized;
+  const first = incentivized[0];
+  assert(typeof first === "boolean");
+  return first;
 }
