@@ -22,9 +22,11 @@ export const drandUrls = [
 const DRAND_GENESIS = 1677685200;
 const DRAND_ROUND_LENGTH = 3;
 
-// Time of round in milliseconds.
-//
-// See TimeOfRound implementation: https://github.com/drand/drand/blob/eb36ba81e3f28c966f95bcd602f60e7ff8ef4c35/chain/time.go#L30-L33
+/**
+ * Time of round in milliseconds.
+ *
+ * See TimeOfRound implementation: https://github.com/drand/drand/blob/eb36ba81e3f28c966f95bcd602f60e7ff8ef4c35/chain/time.go#L30-L33
+ */
 export function timeOfRound(round: number): number {
   return (DRAND_GENESIS + (round - 1) * DRAND_ROUND_LENGTH) * 1000;
 }
