@@ -38,10 +38,13 @@ export class JobsObserver {
     this.gateway = gatewayAddress;
   }
 
-  public async check(): Promise<void> {
+  /**
+   * Checks gateway for pending jobs and returns the rounds of those jobs as a list
+   */
+  public async check(): Promise<number[]> {
     const query = { jobs_desc: { offset: null, limit: 3 } };
     const { jobs }: JobsResponse = await this.noisClient.queryContractSmart(this.gateway, query);
-    if (jobs.length === 0) return; // Nothing to do for us
+    if (jobs.length === 0) return []; // Nothing to do for us
 
     const rounds = jobs.map(parseRound);
     const roundInfos = rounds.map((round) => {
@@ -49,5 +52,6 @@ export class JobsObserver {
       return `#${round} (due ${formatDuration(due)})`;
     });
     console.log(`Jobs pending for rounds: %c${roundInfos.join(", ")}`, "color: orange");
+    return rounds;
   }
 }

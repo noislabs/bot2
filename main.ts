@@ -173,12 +173,26 @@ if (import.meta.main) {
     const shift = 1200;
     setTimeout(() =>
       jobs?.check().then(
-        (_) => {},
+        (rs) => {
+          if (!rs.length) return;
+          console.log(
+            `Past: %o, Future: %o`,
+            rs.filter((r) => r <= n),
+            rs.filter((r) => r > n),
+          );
+        },
         (err) => console.error(err),
       ), shift);
     setTimeout(() =>
       jobs?.check().then(
-        (_) => {},
+        (rs) => {
+          if (!rs.length) return;
+          console.log(
+            `Past: %o, Future: %o`,
+            rs.filter((r) => r <= n),
+            rs.filter((r) => r > n),
+          );
+        },
         (err) => console.error(err),
       ), shift + 1500);
 
