@@ -15,6 +15,7 @@ import {
   watch,
 } from "./deps.ts";
 import { BeaconCache } from "./cache.ts";
+import { JobsObserver } from "./jobs.ts";
 import { loop } from "./loop.ts";
 import { queryIsAllowListed, queryIsIncentivized } from "./drand_contract.ts";
 import { connectTendermint } from "./tendermint.ts";
@@ -53,7 +54,7 @@ if (import.meta.main) {
   const { default: config } = await import("./config.json", {
     assert: { type: "json" },
   });
-  assert(config.contract, `Config field "contract" must be set.`);
+  assert(config.drandAddress, `Config field "drandAddress" must be set.`);
   assert(config.rpcEndpoint, `Config field "rpcEndpoint" must be set.`);
 
   const mnemonic = await (async () => {
@@ -106,7 +107,7 @@ if (import.meta.main) {
     const fee = calculateFee(gasLimitRegister, config.gasPrice);
     await client.execute(
       botAddress,
-      config.contract,
+      config.drandAddress,
       { register_bot: { moniker: moniker } },
       fee,
     );
@@ -121,6 +122,10 @@ if (import.meta.main) {
       console.info(`Bot allow listed for rewards: ${listed}`);
     })(),
   ]);
+
+  if (config.gatewayAddress) {
+    const _jobs = new JobsObserver(client, config.gatewayAddress, new AbortController());
+  }
 
   // Initialize local sign data
   await resetSignData();
