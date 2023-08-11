@@ -16,7 +16,7 @@ import {
 } from "./deps.ts";
 import { BeaconCache } from "./cache.ts";
 import { JobsObserver } from "./jobs.ts";
-import { handleBeacon } from "./submitter.ts";
+import { Submitter } from "./submitter.ts";
 import { queryIsAllowListed, queryIsIncentivized } from "./drand_contract.ts";
 import { connectTendermint } from "./tendermint.ts";
 
@@ -133,6 +133,20 @@ if (import.meta.main) {
 
   const incentivizedRounds = new Map<number, Promise<boolean>>();
 
+  const submitter = new Submitter({
+    client,
+    tmClient,
+    broadcaster2,
+    broadcaster3,
+    getNextSignData,
+    gasLimitAddBeacon,
+    gasPrice: config.gasPrice,
+    botAddress,
+    drandAddress: config.drandAddress,
+    userAgent,
+    incentivizedRounds,
+  });
+
   const fastestNodeClient = new FastestNodeClient(drandUrls, drandOptions);
   fastestNodeClient.start();
   const cache = new BeaconCache(fastestNodeClient, 200 /* 10 min of beacons */);
@@ -157,19 +171,7 @@ if (import.meta.main) {
       incentivizedRounds.set(m, promise);
     }, publishedIn(m) + 100);
 
-    const didSubmit = await handleBeacon({
-      client,
-      tmClient,
-      broadcaster2,
-      broadcaster3,
-      getNextSignData,
-      gasLimitAddBeacon,
-      gasPrice: config.gasPrice,
-      botAddress,
-      drandAddress: config.drandAddress,
-      userAgent,
-      incentivizedRounds,
-    }, beacon);
+    const didSubmit = await submitter.handleBeacon(beacon);
 
     // Check jobs every 1.5s, shifted 1200ms from the drand receiving
     const shift = 1200;
