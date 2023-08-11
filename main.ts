@@ -1,4 +1,4 @@
-import { drandOptions, drandUrls, publishedIn } from "./drand.ts";
+import { drandOptions, drandUrls, publishedIn, publishedSince } from "./drand.ts";
 import { group } from "./group.ts";
 import {
   assert,
@@ -16,7 +16,7 @@ import {
 } from "./deps.ts";
 import { BeaconCache } from "./cache.ts";
 import { JobsObserver } from "./jobs.ts";
-import { loop } from "./loop.ts";
+import { handleBeacon } from "./submitter.ts";
 import { queryIsAllowListed, queryIsIncentivized } from "./drand_contract.ts";
 import { connectTendermint } from "./tendermint.ts";
 
@@ -143,6 +143,8 @@ if (import.meta.main) {
 
     cache.add(n, beacon.signature);
 
+    console.log(`➘ #${beacon.round} received after ${publishedSince(beacon.round)}ms`);
+
     setTimeout(() => {
       // This is called 100ms after publishing time (might be some ms later)
       // From here we have ~300ms until the beacon comes in which should be
@@ -155,7 +157,7 @@ if (import.meta.main) {
       incentivizedRounds.set(m, promise);
     }, publishedIn(m) + 100);
 
-    const didSubmit = await loop({
+    const didSubmit = await handleBeacon({
       client,
       tmClient,
       broadcaster2,

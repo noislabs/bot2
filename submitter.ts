@@ -28,7 +28,7 @@ interface Capture {
   incentivizedRounds: Map<number, Promise<boolean>>;
 }
 
-export async function loop(
+export async function handleBeacon(
   {
     client,
     tmClient,
@@ -44,8 +44,6 @@ export async function loop(
   }: Capture,
   beacon: RandomnessBeacon,
 ): Promise<boolean> {
-  console.log(`➘ #${beacon.round} received after ${publishedSince(beacon.round)}ms`);
-
   // We don't have evidence that this round is incentivized. This is no guarantee it did not
   // get incentivized in the meantime, but we prefer to skip than risk the gas.
   const isIncentivized = await incentivizedRounds.get(beacon.round);
