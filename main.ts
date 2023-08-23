@@ -14,7 +14,6 @@ import {
   sleep,
   watch,
 } from "./deps.ts";
-import { BeaconCache } from "./cache.ts";
 import { JobsObserver } from "./jobs.ts";
 import { Submitter } from "./submitter.ts";
 import { queryIsAllowListed, queryIsIncentivized } from "./drand_contract.ts";
@@ -133,6 +132,8 @@ if (import.meta.main) {
 
   const incentivizedRounds = new Map<number, Promise<boolean>>();
 
+  const fastestNodeClient = new FastestNodeClient(drandUrls, drandOptions);
+
   const submitter = new Submitter({
     client,
     tmClient,
@@ -145,17 +146,14 @@ if (import.meta.main) {
     drandAddress: config.drandAddress,
     userAgent,
     incentivizedRounds,
+    drandClient: fastestNodeClient,
   });
 
-  const fastestNodeClient = new FastestNodeClient(drandUrls, drandOptions);
   fastestNodeClient.start();
-  const cache = new BeaconCache(fastestNodeClient, 200 /* 10 min of beacons */);
   const abortController = new AbortController();
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     const n = beacon.round; // n is the round we just received and process now
     const m = n + 1; // m := n+1 refers to the next round in this current loop
-
-    cache.add(n, beacon.signature);
 
     console.log(`➘ #${beacon.round} received after ${publishedSince(beacon.round)}ms`);
 
@@ -171,31 +169,37 @@ if (import.meta.main) {
       incentivizedRounds.set(m, promise);
     }, publishedIn(m) + 100);
 
-    const didSubmit = await submitter.handleBeacon(beacon);
+    const didSubmit = await submitter.handlePublishedBeacon(beacon);
 
     // Check jobs every 1.5s, shifted 1200ms from the drand receiving
     const shift = 1200;
     setTimeout(() =>
       jobs?.check().then(
-        (rs) => {
-          if (!rs.length) return;
+        (rounds) => {
+          if (!rounds.length) return;
+          const past = rounds.filter((r) => r <= n);
+          const future = rounds.filter((r) => r > n);
           console.log(
             `Past: %o, Future: %o`,
-            rs.filter((r) => r <= n),
-            rs.filter((r) => r > n),
+            past,
+            future,
           );
+          submitter.submitPastRounds(past);
         },
         (err) => console.error(err),
       ), shift);
     setTimeout(() =>
       jobs?.check().then(
-        (rs) => {
-          if (!rs.length) return;
+        (rounds) => {
+          if (!rounds.length) return;
+          const past = rounds.filter((r) => r <= n);
+          const future = rounds.filter((r) => r > n);
           console.log(
             `Past: %o, Future: %o`,
-            rs.filter((r) => r <= n),
-            rs.filter((r) => r > n),
+            past,
+            future,
           );
+          submitter.submitPastRounds(past);
         },
         (err) => console.error(err),
       ), shift + 1500);

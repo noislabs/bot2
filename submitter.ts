@@ -4,6 +4,7 @@ import {
   assertIsDeliverTxSuccess,
   calculateFee,
   CosmWasmClient,
+  FastestNodeClient,
   isDefined,
   logs,
   RandomnessBeacon,
@@ -13,6 +14,7 @@ import {
 } from "./deps.ts";
 import { makeAddBeaconMessage } from "./drand_contract.ts";
 import { ibcPacketsSent } from "./ibc.ts";
+import { BeaconCache } from "./cache.ts";
 
 interface Capture {
   client: SigningCosmWasmClient;
@@ -26,6 +28,7 @@ interface Capture {
   userAgent: string;
   getNextSignData: () => SignerData;
   incentivizedRounds: Map<number, Promise<boolean>>;
+  drandClient: FastestNodeClient;
 }
 
 export class Submitter {
@@ -40,6 +43,8 @@ export class Submitter {
   private userAgent: string;
   private getNextSignData: () => SignerData;
   private incentivizedRounds: Map<number, Promise<boolean>>;
+  private cache: BeaconCache;
+  private submitted: Set<number>;
 
   constructor(capture: Capture) {
     this.client = capture.client;
@@ -53,19 +58,41 @@ export class Submitter {
     this.userAgent = capture.userAgent;
     this.getNextSignData = capture.getNextSignData;
     this.incentivizedRounds = capture.incentivizedRounds;
+    this.cache = new BeaconCache(capture.drandClient, 200 /* 10 min of beacons */);
+    this.submitted = new Set();
   }
 
-  public async handleBeacon(beacon: RandomnessBeacon): Promise<boolean> {
+  public async submitPastRounds(rounds: number[]): Promise<void> {
+    // TODO: Check if incentivised before submistting
+    await Promise.all(rounds.map((round) => this.submitRound(round)));
+  }
+
+  public async submitRound(round: number): Promise<void> {
+    const signature = await this.cache.get(round);
+    await this.submit({ round, signature });
+    return;
+  }
+
+  public async handlePublishedBeacon(beacon: RandomnessBeacon): Promise<boolean> {
+    this.cache.add(beacon.round, beacon.signature);
+
     // We don't have evidence that this round is incentivized. This is no guarantee it did not
     // get incentivized in the meantime, but we prefer to skip than risk the gas.
     const isIncentivized = await this.incentivizedRounds.get(beacon.round);
-    if (!isIncentivized) {
+    if (isIncentivized) {
+      // Use this log to ensure awaiting the isIncentivized query does not slow us down.
+      console.log(`♪ #${beacon.round} ready for signing after ${publishedSince(beacon.round)}ms`);
+      await this.submit(beacon);
+      return true;
+    } else {
       console.log(`Skipping.`);
       return false;
     }
+  }
 
-    // Use this log to ensure awaiting the isIncentivized query does not slow us down.
-    console.log(`♪ #${beacon.round} ready for signing after ${publishedSince(beacon.round)}ms`);
+  private async submit(beacon: Pick<RandomnessBeacon, "round" | "signature">) {
+    if (this.submitted.has(beacon.round)) return;
+    this.submitted.add(beacon.round);
 
     const broadcastTime = Date.now() / 1000;
     const msg = makeAddBeaconMessage(this.botAddress, this.drandAddress, beacon);
@@ -75,7 +102,6 @@ export class Submitter {
     const signed = await this.client.sign(this.botAddress, [msg], fee, memo, signData);
 
     // console.log(`♫ #${beacon.round} signed after ${publishedSince(beacon.round)}ms`);
-
     const tx = Uint8Array.from(TxRaw.encode(signed).finish());
 
     const p1 = this.client.broadcastTx(tx);
@@ -135,7 +161,5 @@ export class Submitter {
         )
       }`,
     );
-
-    return true;
   }
 }
