@@ -67,7 +67,7 @@ export class Submitter {
     await Promise.all(rounds.map((round) => this.submitRound(round)));
   }
 
-  public async submitRound(round: number): Promise<void> {
+  private async submitRound(round: number): Promise<void> {
     const signature = await this.cache.get(round);
     await this.submit({ round, signature });
     return;
