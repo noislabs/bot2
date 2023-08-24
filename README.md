@@ -104,6 +104,6 @@ Start:
 
 ```sh
 docker run \
-  -v $PWD/config.json:/opt/drand-bot/config.json \
+  -v "$PWD/config.json":/app/config.json \
   noislabs/nois-bot:nextgen
 ```
