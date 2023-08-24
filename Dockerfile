@@ -1,5 +1,5 @@
 # See https://hub.docker.com/r/denoland/deno/tags for available images
-FROM denoland/deno:alpine-1.34.3
+FROM denoland/deno:alpine-1.36.1
 
 COPY . /opt/drand-bot
 WORKDIR /opt/drand-bot

@@ -87,15 +87,23 @@ pm2 restart main && pm2 logs --lines 100
 pm2 stop main
 ```
 
-## Run in docker
+## Run in Docker
 
 Make sure you have
 
 - config.json file in your current directory
 - Docker installed and running
 
-Run this command
+Update to latest version:
 
 ```sh
-docker run -v  $PWD/config.json:/opt/drand-bot/config.json  noislabs/nois-bot:0.2.0
+docker pull noislabs/nois-bot:nextgen
+```
+
+Start:
+
+```sh
+docker run \
+  -v $PWD/config.json:/opt/drand-bot/config.json \
+  noislabs/nois-bot:nextgen
 ```
