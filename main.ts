@@ -1,4 +1,4 @@
-import { drandOptions, drandUrls, publishedIn } from "./drand.ts";
+import { drandOptions, drandUrls, publishedIn, publishedSince } from "./drand.ts";
 import { group } from "./group.ts";
 import {
   assert,
@@ -14,8 +14,8 @@ import {
   sleep,
   watch,
 } from "./deps.ts";
-import { BeaconCache } from "./cache.ts";
-import { loop } from "./loop.ts";
+import { JobsObserver } from "./jobs.ts";
+import { Submitter } from "./submitter.ts";
 import { queryIsAllowListed, queryIsIncentivized } from "./drand_contract.ts";
 import { connectTendermint } from "./tendermint.ts";
 
@@ -53,7 +53,7 @@ if (import.meta.main) {
   const { default: config } = await import("./config.json", {
     assert: { type: "json" },
   });
-  assert(config.contract, `Config field "contract" must be set.`);
+  assert(config.drandAddress, `Config field "drandAddress" must be set.`);
   assert(config.rpcEndpoint, `Config field "rpcEndpoint" must be set.`);
 
   const mnemonic = await (async () => {
@@ -106,7 +106,7 @@ if (import.meta.main) {
     const fee = calculateFee(gasLimitRegister, config.gasPrice);
     await client.execute(
       botAddress,
-      config.contract,
+      config.drandAddress,
       { register_bot: { moniker: moniker } },
       fee,
     );
@@ -117,10 +117,15 @@ if (import.meta.main) {
   await Promise.all([
     sleep(500), // the min waiting time
     (async function () {
-      const listed = await queryIsAllowListed(client, config.contract, botAddress);
+      const listed = await queryIsAllowListed(client, config.drandAddress, botAddress);
       console.info(`Bot allow listed for rewards: ${listed}`);
     })(),
   ]);
+
+  let jobs: JobsObserver | undefined;
+  if (config.gatewayAddress) {
+    jobs = new JobsObserver(client, config.gatewayAddress);
+  }
 
   // Initialize local sign data
   await resetSignData();
@@ -128,14 +133,29 @@ if (import.meta.main) {
   const incentivizedRounds = new Map<number, Promise<boolean>>();
 
   const fastestNodeClient = new FastestNodeClient(drandUrls, drandOptions);
+
+  const submitter = new Submitter({
+    client,
+    tmClient,
+    broadcaster2,
+    broadcaster3,
+    getNextSignData,
+    gasLimitAddBeacon,
+    gasPrice: config.gasPrice,
+    botAddress,
+    drandAddress: config.drandAddress,
+    userAgent,
+    incentivizedRounds,
+    drandClient: fastestNodeClient,
+  });
+
   fastestNodeClient.start();
-  const cache = new BeaconCache(fastestNodeClient, 200 /* 10 min of beacons */);
   const abortController = new AbortController();
   for await (const beacon of watch(fastestNodeClient, abortController)) {
     const n = beacon.round; // n is the round we just received and process now
     const m = n + 1; // m := n+1 refers to the next round in this current loop
 
-    cache.add(n, beacon.signature);
+    console.log(`➘ #${beacon.round} received after ${publishedSince(beacon.round)}ms`);
 
     setTimeout(() => {
       // This is called 100ms after publishing time (might be some ms later)
@@ -143,26 +163,46 @@ if (import.meta.main) {
       // enough for the query to finish. In case the query is not yet done,
       // we can wait for the promise to be resolved.
       // console.log(`Now         : ${new Date().toISOString()}\nPublish time: ${new Date(timeOfRound(round)).toISOString()}`);
-      const promise = queryIsIncentivized(client, config.contract, [m], botAddress).then(
-        (incentivized) => !!incentivized[0],
+      const promise = queryIsIncentivized(client, config.drandAddress, m, botAddress).catch(
         (_err) => false,
       );
       incentivizedRounds.set(m, promise);
     }, publishedIn(m) + 100);
 
-    const didSubmit = await loop({
-      client,
-      tmClient,
-      broadcaster2,
-      broadcaster3,
-      getNextSignData,
-      gasLimitAddBeacon,
-      gasPrice: config.gasPrice,
-      botAddress,
-      drandAddress: config.contract,
-      userAgent,
-      incentivizedRounds,
-    }, beacon);
+    const didSubmit = await submitter.handlePublishedBeacon(beacon);
+
+    // Check jobs every 1.5s, shifted 1200ms from the drand receiving
+    const shift = 1200;
+    setTimeout(() =>
+      jobs?.check().then(
+        (rounds) => {
+          if (!rounds.length) return;
+          const past = rounds.filter((r) => r <= n);
+          const future = rounds.filter((r) => r > n);
+          console.log(
+            `Past: %o, Future: %o`,
+            past,
+            future,
+          );
+          submitter.submitPastRounds(past);
+        },
+        (err) => console.error(err),
+      ), shift);
+    setTimeout(() =>
+      jobs?.check().then(
+        (rounds) => {
+          if (!rounds.length) return;
+          const past = rounds.filter((r) => r <= n);
+          const future = rounds.filter((r) => r > n);
+          console.log(
+            `Past: %o, Future: %o`,
+            past,
+            future,
+          );
+          submitter.submitPastRounds(past);
+        },
+        (err) => console.error(err),
+      ), shift + 1500);
 
     if (didSubmit) {
       // Some seconds after the submission when things are idle, check and log
