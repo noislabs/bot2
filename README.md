@@ -97,7 +97,7 @@ Make sure you have
 Update to latest version:
 
 ```sh
-docker pull noislabs/nois-bot:nextgen
+docker pull --platform linux/amd64 noislabs/nois-bot:nextgen
 ```
 
 Start:
