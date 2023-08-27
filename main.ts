@@ -18,6 +18,7 @@ import { JobsObserver } from "./jobs.ts";
 import { Submitter } from "./submitter.ts";
 import { queryIsAllowListed, queryIsIncentivized } from "./drand_contract.ts";
 import { connectTendermint } from "./tendermint.ts";
+import { Config } from "./config.ts";
 
 // Constants
 const gasLimitRegister = 200_000;
@@ -50,11 +51,19 @@ function getNextSignData(): SignerData {
 }
 
 if (import.meta.main) {
-  const { default: config } = await import("./config.json", {
+  const { default: config }: { default: Config } = await import("./config.json", {
     assert: { type: "json" },
   });
-  assert(config.drandAddress, `Config field "drandAddress" must be set.`);
-  assert(config.rpcEndpoint, `Config field "rpcEndpoint" must be set.`);
+  const { drandAddress, gatewayAddress, rpcEndpoint, rpcEndpoint2, rpcEndpoint3 } = config;
+  assert(
+    drandAddress,
+    `Config field "drandAddress" must be set. This was renamed from "contract" to "drandAddress".`,
+  );
+  assert(
+    gatewayAddress,
+    `Config field "gatewayAddress" must be set. This was newly added. See https://docs.nois.network/node_operators/networks.html to find the right address for the network.`,
+  );
+  assert(rpcEndpoint, `Config field "rpcEndpoint" must be set.`);
 
   const mnemonic = await (async () => {
     if (config.mnemonic) {
@@ -71,7 +80,7 @@ if (import.meta.main) {
 
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: config.prefix });
   const [firstAccount] = await wallet.getAccounts();
-  const tmClient = await connectTendermint(config.rpcEndpoint);
+  const tmClient = await connectTendermint(rpcEndpoint);
   const client = await SigningCosmWasmClient.createWithSigner(tmClient, wallet, {
     gasPrice: GasPrice.fromString(config.gasPrice),
   });
@@ -89,16 +98,12 @@ if (import.meta.main) {
     console.log(`Sign data set to: ${JSON.stringify(nextSignData)}`);
   };
 
-  console.info(`Connected to RPC endpoint ${config.rpcEndpoint}.`);
+  console.info(`Connected to RPC endpoint ${rpcEndpoint}.`);
   console.info(`Chain ID: ${await client.getChainId()}`);
   console.info(`Height: ${await client.getHeight()}`);
 
-  const broadcaster2 = config.rpcEndpoint2
-    ? await CosmWasmClient.connect(config.rpcEndpoint2)
-    : null;
-  const broadcaster3 = config.rpcEndpoint3
-    ? await CosmWasmClient.connect(config.rpcEndpoint3)
-    : null;
+  const broadcaster2 = rpcEndpoint2 ? await CosmWasmClient.connect(rpcEndpoint2) : null;
+  const broadcaster3 = rpcEndpoint3 ? await CosmWasmClient.connect(rpcEndpoint3) : null;
 
   const moniker = config.moniker;
   if (moniker) {
@@ -106,7 +111,7 @@ if (import.meta.main) {
     const fee = calculateFee(gasLimitRegister, config.gasPrice);
     await client.execute(
       botAddress,
-      config.drandAddress,
+      drandAddress,
       { register_bot: { moniker: moniker } },
       fee,
     );
@@ -117,15 +122,12 @@ if (import.meta.main) {
   await Promise.all([
     sleep(500), // the min waiting time
     (async function () {
-      const listed = await queryIsAllowListed(client, config.drandAddress, botAddress);
+      const listed = await queryIsAllowListed(client, drandAddress, botAddress);
       console.info(`Bot allow listed for rewards: ${listed}`);
     })(),
   ]);
 
-  let jobs: JobsObserver | undefined;
-  if (config.gatewayAddress) {
-    jobs = new JobsObserver(client, config.gatewayAddress);
-  }
+  const jobs = new JobsObserver(client, gatewayAddress);
 
   // Initialize local sign data
   await resetSignData();
@@ -143,7 +145,7 @@ if (import.meta.main) {
     gasLimitAddBeacon,
     gasPrice: config.gasPrice,
     botAddress,
-    drandAddress: config.drandAddress,
+    drandAddress: drandAddress,
     userAgent,
     incentivizedRounds,
     drandClient: fastestNodeClient,
@@ -163,7 +165,7 @@ if (import.meta.main) {
       // enough for the query to finish. In case the query is not yet done,
       // we can wait for the promise to be resolved.
       // console.log(`Now         : ${new Date().toISOString()}\nPublish time: ${new Date(timeOfRound(round)).toISOString()}`);
-      const promise = queryIsIncentivized(client, config.drandAddress, m, botAddress).catch(
+      const promise = queryIsIncentivized(client, drandAddress, m, botAddress).catch(
         (_err) => false,
       );
       incentivizedRounds.set(m, promise);
@@ -174,7 +176,7 @@ if (import.meta.main) {
     // Check jobs every 1.5s, shifted 1200ms from the drand receiving
     const shift = 1200;
     setTimeout(() =>
-      jobs?.check().then(
+      jobs.check().then(
         (rounds) => {
           if (!rounds.length) return;
           const past = rounds.filter((r) => r <= n);
@@ -189,7 +191,7 @@ if (import.meta.main) {
         (err) => console.error(err),
       ), shift);
     setTimeout(() =>
-      jobs?.check().then(
+      jobs.check().then(
         (rounds) => {
           if (!rounds.length) return;
           const past = rounds.filter((r) => r <= n);
