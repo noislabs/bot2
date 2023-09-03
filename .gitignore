@@ -1,1 +1,5 @@
-config.json
+# main config file used by the app
+/config.json
+
+# custom config files you might want to link
+/config.*.json
