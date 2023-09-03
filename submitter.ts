@@ -3,8 +3,8 @@ import { publishedSince, timeOfRound } from "./drand.ts";
 import {
   assertIsDeliverTxSuccess,
   calculateFee,
+  ChainClient,
   CosmWasmClient,
-  FastestNodeClient,
   isDefined,
   logs,
   RandomnessBeacon,
@@ -28,7 +28,7 @@ interface Capture {
   userAgent: string;
   getNextSignData: () => SignerData;
   incentivizedRounds: Map<number, Promise<boolean>>;
-  drandClient: FastestNodeClient;
+  drandClient: ChainClient;
 }
 
 export class Submitter {
