@@ -16,7 +16,7 @@ import {
 } from "./deps.ts";
 import { JobsObserver } from "./jobs.ts";
 import { Submitter } from "./submitter.ts";
-import { queryIsAllowListed, queryIsIncentivized } from "./drand_contract.ts";
+import { queryIsAllowlisted, queryIsIncentivized } from "./drand_contract.ts";
 import { connectTendermint } from "./tendermint.ts";
 import { Config } from "./config.ts";
 
@@ -122,8 +122,8 @@ if (import.meta.main) {
   await Promise.all([
     sleep(500), // the min waiting time
     (async function () {
-      const listed = await queryIsAllowListed(client, drandAddress, botAddress);
-      console.info(`Bot allow listed for rewards: ${listed}`);
+      const listed = await queryIsAllowlisted(client, drandAddress, botAddress);
+      console.info(`Bot allowlisted for rewards: ${listed}`);
     })(),
   ]);
 

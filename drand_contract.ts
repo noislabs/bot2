@@ -4,14 +4,14 @@ import { assert, CosmWasmClient, MsgExecuteContractEncodeObject, toUtf8 } from "
 
 export function makeAddBeaconMessage(
   senderAddress: string,
-  contractAddress: string,
+  drandAddress: string,
   beacon: { round: number; signature: string },
 ): MsgExecuteContractEncodeObject {
   return {
     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
     value: MsgExecuteContract.fromPartial({
       sender: senderAddress,
-      contract: contractAddress,
+      contract: drandAddress,
       msg: toUtf8(JSON.stringify({
         add_round: {
           round: beacon.round,
@@ -23,24 +23,24 @@ export function makeAddBeaconMessage(
   };
 }
 
-export async function queryIsAllowListed(
+export async function queryIsAllowlisted(
   client: CosmWasmClient,
-  contractAddress: string,
+  drandAddress: string,
   botAddress: string,
 ): Promise<boolean> {
-  const { listed } = await client.queryContractSmart(contractAddress, {
-    is_allow_listed: { bot: botAddress },
+  const { listed } = await client.queryContractSmart(drandAddress, {
+    is_allowlisted: { bot: botAddress },
   });
   return listed;
 }
 
 export async function queryIsIncentivized(
   client: CosmWasmClient,
-  contractAddress: string,
+  drandAddress: string,
   round: number,
   botAddress: string,
 ): Promise<boolean> {
-  const { incentivized } = await client.queryContractSmart(contractAddress, {
+  const { incentivized } = await client.queryContractSmart(drandAddress, {
     is_incentivized: { rounds: [round], sender: botAddress },
   });
   // console.log(`#${rounds[0]} incentivized query returned at ${publishedSince(rounds[0])}ms`)
