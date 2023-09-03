@@ -23,13 +23,13 @@ export function makeAddBeaconMessage(
   };
 }
 
-export async function queryIsAllowListed(
+export async function queryIsAllowlisted(
   client: CosmWasmClient,
   drandAddress: string,
   botAddress: string,
 ): Promise<boolean> {
   const { listed } = await client.queryContractSmart(drandAddress, {
-    is_allow_listed: { bot: botAddress },
+    is_allowlisted: { bot: botAddress },
   });
   return listed;
 }
