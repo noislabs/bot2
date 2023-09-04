@@ -23,4 +23,9 @@ export type { TendermintClient } from "npm:@cosmjs/tendermint-rpc@^0.31.1";
 
 // drand
 export type { ChainClient, ChainOptions, RandomnessBeacon } from "npm:drand-client@^1.2.0";
-export { FastestNodeClient, watch } from "npm:drand-client@^1.2.0";
+export {
+  FastestNodeClient,
+  HttpCachingChain,
+  HttpChainClient,
+  watch,
+} from "npm:drand-client@^1.2.0";

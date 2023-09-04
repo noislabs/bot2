@@ -8,5 +8,10 @@
   "denom": "unois",
   "gasPrice": "0.05unois",
   "prefix": "nois",
-  "moniker": ""
+  "moniker": "",
+  "drandEndpoints": [
+    "https://api2.drand.sh/",
+    "https://api3.drand.sh/",
+    "https://drand.cloudflare.com/"
+  ]
 }

@@ -1,14 +1,23 @@
-import { drandOptions, drandUrls, publishedIn, publishedSince } from "./drand.ts";
+import {
+  defaultEndpoints,
+  drandBaseUrl,
+  drandOptions,
+  publishedIn,
+  publishedSince,
+} from "./drand.ts";
 import { group } from "./group.ts";
 import {
   assert,
   calculateFee,
+  ChainClient,
   Coin,
   CosmWasmClient,
   Decimal,
   DirectSecp256k1HdWallet,
   FastestNodeClient,
   GasPrice,
+  HttpCachingChain,
+  HttpChainClient,
   SignerData,
   SigningCosmWasmClient,
   sleep,
@@ -146,7 +155,22 @@ if (import.meta.main) {
 
   const incentivizedRounds = new Map<number, Promise<boolean>>();
 
-  const fastestNodeClient = new FastestNodeClient(drandUrls, drandOptions);
+  const drandEndpoints = config.drandEndpoints ?? defaultEndpoints;
+  assert(
+    drandEndpoints,
+    "drandEndpoints must not be an empty list. Use null or omit to use the default list.",
+  );
+
+  const drandClient: ChainClient = (() => {
+    if (drandEndpoints.length === 1) {
+      const chain = new HttpCachingChain(drandBaseUrl(drandEndpoints[0]), drandOptions);
+      return new HttpChainClient(chain);
+    } else {
+      const fc = new FastestNodeClient(drandEndpoints.map(drandBaseUrl), drandOptions);
+      fc.start();
+      return fc;
+    }
+  })();
 
   const submitter = new Submitter({
     client,
@@ -160,12 +184,11 @@ if (import.meta.main) {
     drandAddress: drandAddress,
     userAgent,
     incentivizedRounds,
-    drandClient: fastestNodeClient,
+    drandClient,
   });
 
-  fastestNodeClient.start();
   const abortController = new AbortController();
-  for await (const beacon of watch(fastestNodeClient, abortController)) {
+  for await (const beacon of watch(drandClient, abortController)) {
     const n = beacon.round; // n is the round we just received and process now
     const m = n + 1; // m := n+1 refers to the next round in this current loop
 

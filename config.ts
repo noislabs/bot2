@@ -10,4 +10,5 @@ export interface Config {
   readonly gasPrice: string;
   readonly prefix: string;
   readonly moniker: string;
+  readonly drandEndpoints?: string[] | null;
 }
