@@ -84,9 +84,17 @@ if (import.meta.main) {
   const client = await SigningCosmWasmClient.createWithSigner(tmClient, wallet, {
     gasPrice: GasPrice.fromString(config.gasPrice),
   });
+
+  // Bot info
   const botAddress = firstAccount.address;
   console.log(`Bot address: ${botAddress}`);
   console.log(`Group: ${group(botAddress)}`);
+  try {
+    const balance = await client.getBalance(botAddress, config.denom);
+    console.log(`Balance: ${printableCoin(balance)}`);
+  } catch (error: unknown) {
+    console.warn(`Error getting bot balance: ${error}`);
+  }
 
   // Needed in case an error happened to ensure sequence is in sync
   // with chain
@@ -107,7 +115,7 @@ if (import.meta.main) {
 
   const moniker = config.moniker;
   if (moniker) {
-    console.info("Registering this bot ...");
+    console.info(`Registering bot '${moniker}'...`);
     const fee = calculateFee(gasLimitRegister, config.gasPrice);
     await client.execute(
       botAddress,
@@ -122,8 +130,12 @@ if (import.meta.main) {
   await Promise.all([
     sleep(500), // the min waiting time
     (async function () {
-      const listed = await queryIsAllowlisted(client, drandAddress, botAddress);
-      console.info(`Bot allowlisted for rewards: ${listed}`);
+      try {
+        const listed = await queryIsAllowlisted(client, drandAddress, botAddress);
+        console.info(`Bot allowlisted for rewards: ${listed}`);
+      } catch (error: unknown) {
+        console.warn(`Query error: ${error}`);
+      }
     })(),
   ]);
 
@@ -173,38 +185,22 @@ if (import.meta.main) {
 
     const didSubmit = await submitter.handlePublishedBeacon(beacon);
 
+    const processJobs = (rounds: number[]): void => {
+      if (!rounds.length) return;
+      const past = rounds.filter((r) => r <= n);
+      const future = rounds.filter((r) => r > n);
+      console.log(
+        `Past: %o, Future: %o`,
+        past,
+        future,
+      );
+      submitter.submitPastRounds(past);
+    };
+
     // Check jobs every 1.5s, shifted 1200ms from the drand receiving
     const shift = 1200;
-    setTimeout(() =>
-      jobs.check().then(
-        (rounds) => {
-          if (!rounds.length) return;
-          const past = rounds.filter((r) => r <= n);
-          const future = rounds.filter((r) => r > n);
-          console.log(
-            `Past: %o, Future: %o`,
-            past,
-            future,
-          );
-          submitter.submitPastRounds(past);
-        },
-        (err) => console.error(err),
-      ), shift);
-    setTimeout(() =>
-      jobs.check().then(
-        (rounds) => {
-          if (!rounds.length) return;
-          const past = rounds.filter((r) => r <= n);
-          const future = rounds.filter((r) => r > n);
-          console.log(
-            `Past: %o, Future: %o`,
-            past,
-            future,
-          );
-          submitter.submitPastRounds(past);
-        },
-        (err) => console.error(err),
-      ), shift + 1500);
+    setTimeout(() => jobs.check().then(processJobs, (err) => console.error(err)), shift);
+    setTimeout(() => jobs.check().then(processJobs, (err) => console.error(err)), shift + 1500);
 
     if (didSubmit) {
       // Some seconds after the submission when things are idle, check and log
