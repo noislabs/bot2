@@ -217,7 +217,7 @@ if (import.meta.main) {
         past,
         future,
       );
-      submitter.submitPastRounds(past);
+      submitter.handlePastRoundsWithJobs(past);
     };
 
     // Check jobs every 1.5s, shifted 1200ms from the drand receiving

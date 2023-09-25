@@ -12,7 +12,7 @@ import {
   SigningCosmWasmClient,
   TendermintClient,
 } from "./deps.ts";
-import { makeAddBeaconMessage } from "./drand_contract.ts";
+import { makeAddBeaconMessage, queryIsIncentivized } from "./drand_contract.ts";
 import { ibcPacketsSent } from "./ibc.ts";
 import { BeaconCache } from "./cache.ts";
 
@@ -62,14 +62,30 @@ export class Submitter {
     this.submitted = new Set();
   }
 
-  public async submitPastRounds(rounds: number[]): Promise<void> {
-    // TODO: Check if incentivised before submistting
-    await Promise.all(rounds.map((round) => this.submitRound(round)));
+  /** Handle jobs for which the round should be public */
+  public async handlePastRoundsWithJobs(rounds: number[]): Promise<void> {
+    await Promise.all(rounds.map((round) => this.handlePastRoundWithJobs(round)));
   }
 
-  private async submitRound(round: number): Promise<void> {
-    const signature = await this.cache.get(round);
-    await this.submit({ round, signature });
+  private async handlePastRoundWithJobs(round: number): Promise<void> {
+    // Query IsIncentovized and get beacon in parallel
+    const isIncentivizedPromise = queryIsIncentivized(
+      this.client,
+      this.drandAddress,
+      round,
+      this.botAddress,
+    ).catch(
+      (_err) => false,
+    );
+    const signaturePromise = this.cache.get(round);
+
+    if (await isIncentivizedPromise) {
+      const signature = await signaturePromise;
+      await this.submit({ round, signature });
+    } else {
+      console.log(`Skipping unincentivized past round #${round}.`);
+    }
+
     return;
   }
 
