@@ -22,14 +22,20 @@ export class BeaconCache {
     }
   }
 
-  public async get(round: number): Promise<string> {
-    const got = this.data.get(round);
+  public async get(requestRound: number): Promise<string> {
+    const got = this.data.get(requestRound);
     if (got) {
       return got;
     }
 
-    const { signature } = await this.client.get(round);
-    this.data.set(round, signature);
+    const { signature, round } = await this.client.get(requestRound);
+    assert(typeof signature === "string", "Got unexpected signature type at runtime");
+    assert(typeof round === "number", "Got unexpected round type at runtime");
+    assert(
+      round === requestRound,
+      `Got differerent round than expected from drand client (requested: ${requestRound}, got: ${round}). This is likely a server-side error.`,
+    );
+    this.data.set(requestRound, signature);
     return signature;
   }
 
