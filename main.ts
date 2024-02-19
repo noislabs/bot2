@@ -11,6 +11,7 @@ import {
   calculateFee,
   ChainClient,
   Coin,
+  connectComet,
   CosmWasmClient,
   Decimal,
   DirectSecp256k1HdWallet,
@@ -26,7 +27,6 @@ import {
 import { JobsObserver } from "./jobs.ts";
 import { Submitter } from "./submitter.ts";
 import { queryIsAllowlisted, queryIsIncentivized } from "./drand_contract.ts";
-import { connectTendermint } from "./tendermint.ts";
 import { Config } from "./config.ts";
 
 // Constants
@@ -89,8 +89,8 @@ if (import.meta.main) {
 
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: config.prefix });
   const [firstAccount] = await wallet.getAccounts();
-  const tmClient = await connectTendermint(rpcEndpoint);
-  const client = await SigningCosmWasmClient.createWithSigner(tmClient, wallet, {
+  const cometClient = await connectComet(rpcEndpoint);
+  const client = await SigningCosmWasmClient.createWithSigner(cometClient, wallet, {
     gasPrice: GasPrice.fromString(config.gasPrice),
   });
 
@@ -174,7 +174,7 @@ if (import.meta.main) {
 
   const submitter = new Submitter({
     client,
-    tmClient,
+    cometClient,
     broadcaster2,
     broadcaster3,
     getNextSignData,
