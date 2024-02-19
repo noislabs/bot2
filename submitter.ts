@@ -4,13 +4,13 @@ import {
   assertIsDeliverTxSuccess,
   calculateFee,
   ChainClient,
+  CometClient,
   CosmWasmClient,
   isDefined,
   logs,
   RandomnessBeacon,
   SignerData,
   SigningCosmWasmClient,
-  TendermintClient,
 } from "./deps.ts";
 import { makeAddBeaconMessage, queryIsIncentivized } from "./drand_contract.ts";
 import { ibcPacketsSent } from "./ibc.ts";
@@ -18,7 +18,7 @@ import { BeaconCache } from "./cache.ts";
 
 interface Capture {
   client: SigningCosmWasmClient;
-  tmClient: TendermintClient;
+  cometClient: CometClient;
   broadcaster2: CosmWasmClient | null;
   broadcaster3: CosmWasmClient | null;
   botAddress: string;
@@ -33,7 +33,7 @@ interface Capture {
 
 export class Submitter {
   private client: SigningCosmWasmClient;
-  private tmClient: TendermintClient;
+  private cometClient: CometClient;
   private broadcaster2: CosmWasmClient | null;
   private broadcaster3: CosmWasmClient | null;
   private botAddress: string;
@@ -48,7 +48,7 @@ export class Submitter {
 
   constructor(capture: Capture) {
     this.client = capture.client;
-    this.tmClient = capture.tmClient;
+    this.cometClient = capture.cometClient;
     this.broadcaster2 = capture.broadcaster2;
     this.broadcaster3 = capture.broadcaster3;
     this.botAddress = capture.botAddress;
@@ -165,7 +165,7 @@ export class Submitter {
       `✔ #${beacon.round} committed (Points: ${points}; Payout: ${payout}; Gas: ${result.gasUsed}/${result.gasWanted}; Jobs processed: ${jobs}; Transaction: ${result.transactionHash})`,
     );
     const publishTime = timeOfRound(beacon.round) / 1000;
-    const { block } = await this.tmClient.block(result.height);
+    const { block } = await this.cometClient.block(result.height);
     const commitTime = block.header.time.getTime() / 1000; // seconds with fractional part
     const diff = commitTime - publishTime;
     console.info(
