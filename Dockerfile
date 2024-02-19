@@ -1,5 +1,5 @@
 # See https://hub.docker.com/r/denoland/deno/tags for available images
-FROM denoland/deno:alpine-1.36.1
+FROM denoland/deno:alpine-1.40.5
 
 WORKDIR /app
 
