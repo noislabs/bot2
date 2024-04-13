@@ -42,7 +42,7 @@ export class JobsObserver {
    * Checks gateway for pending jobs and returns the rounds of those jobs as a list
    */
   public async check(): Promise<number[]> {
-    const query = { jobs_desc: { offset: null, limit: 3 } };
+    const query = { jobs_desc: { offset: null, limit: 50 } };
     const { jobs }: JobsResponse = await this.noisClient.queryContractSmart(this.gateway, query);
     if (jobs.length === 0) return []; // Nothing to do for us
 
