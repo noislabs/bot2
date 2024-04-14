@@ -59,9 +59,13 @@ function getNextSignData(): SignerData {
   return out;
 }
 
-// If this is set to false, the bot will only observe drand and check for each
-// round **once** if it was incentivised. Everything that is markt as incentivised
-// too late or is unprocessed for whatever reason will not be submitted.
+/**
+ * If this is set to false, the bot will only watch the drand chain and check for
+ * each round **once** if it is incentivised. Everything that is marked as incentivised
+ * too late or is still unprocessed for whatever reason will not be submitted.
+ *
+ * It's not recommended to change this value for anything else than development.
+ */
 const cleanupOldJobs = true;
 
 if (import.meta.main) {
