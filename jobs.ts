@@ -26,7 +26,7 @@ function formatDuration(durationInMs: number): string {
   return `${inSeconds.toFixed(1)}s`;
 }
 
-export class JobsObserver {
+export class JobsChecker {
   private readonly noisClient: CosmWasmClient;
   private readonly gateway: string;
 
