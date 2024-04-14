@@ -214,7 +214,7 @@ if (import.meta.main) {
       const past = rounds.filter((r) => r <= n);
       const future = rounds.filter((r) => r > n);
       console.log(
-        `Past: %o, Future: %o`,
+        `Past (${past.length}): %o, Future (${future.length}): %o`,
         past,
         future,
       );
