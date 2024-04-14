@@ -89,6 +89,7 @@ if (import.meta.main) {
 
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: config.prefix });
   const [firstAccount] = await wallet.getAccounts();
+  console.log(`Connecting to ${rpcEndpoint} ...`);
   const cometClient = await connectComet(rpcEndpoint);
   const client = await SigningCosmWasmClient.createWithSigner(cometClient, wallet, {
     gasPrice: GasPrice.fromString(config.gasPrice),
