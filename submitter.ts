@@ -64,7 +64,13 @@ export class Submitter {
 
   /** Handle jobs for which the round should be public */
   public async handlePastRoundsWithJobs(rounds: number[]): Promise<void> {
-    await Promise.all(rounds.map((round) => this.handlePastRoundWithJobs(round)));
+    // Do not process those jobs in parallel in order to avoid sequence mismatches.
+
+    // We process from new to old for no good reason
+    const sorted = rounds.sort().reverse();
+    for (const round of sorted) {
+      await this.handlePastRoundWithJobs(round);
+    }
   }
 
   private async handlePastRoundWithJobs(round: number): Promise<void> {
@@ -106,6 +112,12 @@ export class Submitter {
     }
   }
 
+  /**
+   * Takes a beacon, submits it through a transaction and wait for inclusion in a block.
+   *
+   * Do not call this multiple times in parallel in order to avoid race conditions and
+   * account sequence mismatches.
+   */
   private async submit(beacon: Pick<RandomnessBeacon, "round" | "signature">) {
     if (this.submitted.has(beacon.round)) return;
     this.submitted.add(beacon.round);

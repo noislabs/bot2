@@ -26,7 +26,7 @@ function formatDuration(durationInMs: number): string {
   return `${inSeconds.toFixed(1)}s`;
 }
 
-export class JobsObserver {
+export class JobsChecker {
   private readonly noisClient: CosmWasmClient;
   private readonly gateway: string;
 
@@ -42,7 +42,11 @@ export class JobsObserver {
    * Checks gateway for pending jobs and returns the rounds of those jobs as a list
    */
   public async check(): Promise<number[]> {
-    const query = { jobs_desc: { offset: null, limit: 50 } };
+    const queryLimit = 4;
+
+    // Use jobs_asc because with jobs_desc all entries in the result might be in the (far) future,
+    // leading to cases where the unprocesses jobs in the past are not processed anymore.
+    const query = { jobs_asc: { offset: null, limit: queryLimit } };
     const { jobs }: JobsResponse = await this.noisClient.queryContractSmart(this.gateway, query);
     if (jobs.length === 0) return []; // Nothing to do for us
 
@@ -51,7 +55,7 @@ export class JobsObserver {
       const due = timeOfRound(round) - Date.now();
       return `#${round} (due ${formatDuration(due)})`;
     });
-    console.log(`Jobs pending for rounds: %c${roundInfos.join(", ")}`, "color: orange");
+    console.log(`Top ${queryLimit} pending jobs: %c${roundInfos.join(", ")}`, "color: orange");
     return rounds;
   }
 }

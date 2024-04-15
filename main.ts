@@ -24,7 +24,7 @@ import {
   sleep,
   watch,
 } from "./deps.ts";
-import { JobsObserver } from "./jobs.ts";
+import { JobsChecker } from "./jobs.ts";
 import { Submitter } from "./submitter.ts";
 import { queryIsAllowlisted, queryIsIncentivized } from "./drand_contract.ts";
 import { Config } from "./config.ts";
@@ -59,6 +59,15 @@ function getNextSignData(): SignerData {
   return out;
 }
 
+/**
+ * If this is set to false, the bot will only watch the drand chain and check for
+ * each round **once** if it is incentivised. Everything that is marked as incentivised
+ * too late or is still unprocessed for whatever reason will not be submitted.
+ *
+ * It's not recommended to change this value for anything else than development.
+ */
+const cleanupOldJobs = true;
+
 if (import.meta.main) {
   const { default: config }: { default: Config } = await import("./config.json", {
     assert: { type: "json" },
@@ -89,6 +98,7 @@ if (import.meta.main) {
 
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: config.prefix });
   const [firstAccount] = await wallet.getAccounts();
+  console.log(`Connecting to ${rpcEndpoint} ...`);
   const cometClient = await connectComet(rpcEndpoint);
   const client = await SigningCosmWasmClient.createWithSigner(cometClient, wallet, {
     gasPrice: GasPrice.fromString(config.gasPrice),
@@ -148,7 +158,10 @@ if (import.meta.main) {
     })(),
   ]);
 
-  const jobs = new JobsObserver(client, gatewayAddress);
+  let jobsChecker: JobsChecker | undefined;
+  if (cleanupOldJobs) {
+    jobsChecker = new JobsChecker(client, gatewayAddress);
+  }
 
   // Initialize local sign data
   await resetSignData();
@@ -208,22 +221,29 @@ if (import.meta.main) {
 
     const didSubmit = await submitter.handlePublishedBeacon(beacon);
 
-    const processJobs = (rounds: number[]): void => {
-      if (!rounds.length) return;
-      const past = rounds.filter((r) => r <= n);
-      const future = rounds.filter((r) => r > n);
-      console.log(
-        `Past: %o, Future: %o`,
-        past,
-        future,
-      );
-      submitter.handlePastRoundsWithJobs(past);
-    };
+    if (cleanupOldJobs) {
+      const processJobs = (rounds: number[]): void => {
+        if (!rounds.length) return;
+        const past = rounds.filter((r) => r <= n);
+        const future = rounds.filter((r) => r > n);
+        console.log(
+          `Past (${past.length}): %o, Future (${future.length}): %o`,
+          past,
+          future,
+        );
+        submitter.handlePastRoundsWithJobs(past);
+      };
 
-    // Check jobs every 1.5s, shifted 1200ms from the drand receiving
-    const shift = 1200;
-    setTimeout(() => jobs.check().then(processJobs, (err) => console.error(err)), shift);
-    setTimeout(() => jobs.check().then(processJobs, (err) => console.error(err)), shift + 1500);
+      const check = () => {
+        assert(jobsChecker);
+        jobsChecker.check().then(processJobs, (err) => console.error(err));
+      };
+
+      // Check jobs every 1.5s, shifted 1200ms from the drand receiving
+      const shift = 1200;
+      setTimeout(check, shift);
+      setTimeout(check, shift + 1500);
+    }
 
     if (didSubmit) {
       // Some seconds after the submission when things are idle, check and log
